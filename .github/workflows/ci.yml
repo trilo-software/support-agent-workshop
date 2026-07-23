@@ -1,0 +1,22 @@
+name: ci
+
+# Solo la suite normal: los tests de los ejercicios (marker "ejercicio")
+# quedan excluidos por el addopts del pyproject — empiezan rojos a propósito.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Instalar dependencias
+        run: uv sync --frozen
+
+      - name: Tests
+        run: uv run pytest

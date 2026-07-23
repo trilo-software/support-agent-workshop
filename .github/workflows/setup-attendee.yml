@@ -1,0 +1,34 @@
+name: setup-attendee
+
+# Corre esta Action UNA vez tras forkear el repo (pestaña Actions →
+# setup-attendee → Run workflow). Prefija los recursos del render.yaml con tu
+# usuario de GitHub para que no colisionen con los del resto de asistentes en
+# la organización de Render compartida.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  namespace:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Namespacear render.yaml
+        run: |
+          pip install pyyaml
+          python scripts/setup_attendee.py "$GITHUB_ACTOR"
+
+      - name: Commit y push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add render.yaml
+          git commit -m "Namespacear recursos de Render para $GITHUB_ACTOR" || echo "sin cambios"
+          git push

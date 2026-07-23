@@ -1,0 +1,45 @@
+[project]
+name = "support-agent-workshop"
+version = "0.1.0"
+description = "Workshop: agente de soporte con RAG y MCP, desplegado en Render"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "google-genai>=2.14",
+    "mcp>=1.28,<2",
+    "pyyaml>=6.0",
+    "asyncpg>=0.30",
+    "numpy>=2.0",
+]
+
+[tool.uv]
+# cryptography>=49 dejó de publicar wheels para macOS Intel; la 48.x tiene
+# wheels en todas las plataformas (incluido el runtime de Render).
+constraint-dependencies = ["cryptography<49"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/support_agent"]
+
+[tool.pytest.ini_options]
+# Los tests de los ejercicios (marker "ejercicio") están EXCLUIDOS del run
+# por defecto: empiezan rojos a propósito. Córrelos con: pytest -m ejercicio
+addopts = "-m 'not ejercicio'"
+markers = [
+    "ejercicio: tests de los ejercicios del workshop (rojos hasta completarlos)",
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]

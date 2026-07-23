@@ -1,0 +1,39 @@
+# Preguntas doradas para los mini-evals de retrieval (Ejercicio 4).
+# Cada entrada: la pregunta de un cliente y el documento de la KB que
+# DEBERÍA aparecer en el top-k del retrieval para poder responderla.
+#
+# Nota: la última pregunta solo se puede responder con kb/promociones.md,
+# que NO existe hasta que completes el Ejercicio 3.
+
+- pregunta: "¿Cuánto cuesta el envío a Limón?"
+  fuente_esperada: kb/envios.md
+
+- pregunta: "¿Cuántos días hábiles tarda un envío a Cartago?"
+  fuente_esperada: kb/envios.md
+
+- pregunta: "Mi paquete se pierde en el camino, ¿qué hacen?"
+  fuente_esperada: kb/envios.md
+
+- pregunta: "¿Cuánto cuesta al mes el plan Jaguar?"
+  fuente_esperada: kb/suscripciones.md
+
+- pregunta: "Quiero pausar mi suscripción unos meses, ¿se puede?"
+  fuente_esperada: kb/suscripciones.md
+
+- pregunta: "¿Qué métodos de pago aceptan, sirve SINPE Móvil?"
+  fuente_esperada: kb/facturacion.md
+
+- pregunta: "¿Cuánto tarda un reembolso a mi tarjeta?"
+  fuente_esperada: kb/facturacion.md
+
+- pregunta: "¿Qué acidez y notas tiene el café de Tarrazú?"
+  fuente_esperada: kb/productos.md
+
+- pregunta: "¿Cuál es la diferencia entre tueste claro y tueste oscuro?"
+  fuente_esperada: kb/productos.md
+
+- pregunta: "¿Puedo devolver una bolsa sin abrir si me arrepentí de la compra?"
+  fuente_esperada: kb/devoluciones.md
+
+- pregunta: "¿Tienen descuento para la primera compra?"
+  fuente_esperada: kb/promociones.md
