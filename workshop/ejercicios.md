@@ -1,6 +1,6 @@
 # Los ejercicios
 
-Regla del juego: el repo recién forkeado **deploya verde y el chat responde,
+Regla del juego: tu rama recién creada **deploya verde y el chat responde,
 pero responde mal**. Cada ejercicio arregla una pieza, y el cambio se ve en tu
 servicio desplegado (edita → commit → push → Render redeploya).
 
@@ -64,8 +64,10 @@ Dos roturas en el mismo archivo:
   (4 funciona bien).
 - **(b)** `RETRIEVE_SQL` no tiene `ORDER BY`: la base devuelve chunks en un
   orden arbitrario, no los más parecidos. pgvector te da el operador `<=>`
-  (distancia coseno: **menor = más parecido**). El backend en memoria imita
-  esta query, así que el mismo fix arregla local y producción.
+  (distancia coseno: **menor = más parecido**). El backend en memoria (el que
+  corre en el workshop) imita esta query: mientras no tenga `ORDER BY`,
+  tampoco ordena. El mismo fix vale para el Postgres real de la variante con
+  pgvector.
 
 **Verifica:**
 
@@ -104,8 +106,21 @@ Invéntala, pero con datos concretos. Contenido mínimo sugerido:
 - Un **programa de referidos** con montos concretos (p. ej. ₡3.000 para cada
   lado).
 
-Push → Render redeploya → la ingesta idempotente detecta el archivo nuevo y
-solo embebe ese (míralo en los logs: `ingesta: 6 documentos, 1 nuevos…`).
+Push → Render redeploya → la ingesta corre al arrancar y ahora ve 6
+documentos (míralo en los logs: `ingesta: 6 documentos, 6 nuevos…`; como el
+índice vive en memoria, cada arranque embebe todo desde cero).
+
+La ingesta es **idempotente por hash**: si la vuelves a lanzar sin cambiar
+nada, no embebe nada. Compruébalo en tu servicio:
+
+```bash
+curl -X POST https://<tu-servicio>.onrender.com/api/ingest
+# → {"documentos": 6, "ingresados": 0, "chunks_nuevos": 0, ...}
+```
+
+Y en local, con el server corriendo, la versión más vistosa: crea el archivo,
+lanza `curl -X POST http://localhost:3000/api/ingest` y verás `"ingresados": 1`
+sin reiniciar nada.
 
 **Verifica:**
 
@@ -122,10 +137,10 @@ título, secciones <code>##</code>, datos específicos.
 </details>
 
 <details><summary>Pista 2</summary>
-Si el retrieval no lo encuentra, usa las palabras que la gente preguntaría
-(«descuento», «primera compra», «referidos») en el texto del documento. Y
-si tu servicio ya estaba desplegado, fuerza la ingesta:
-<code>curl -X POST https://&lt;tu-servicio&gt;.onrender.com/api/ingest</code>
+Si el retrieval no lo encuentra, usa las palabras que la gente preguntarían
+(«descuento», «primera compra», «referidos») en el texto del documento. Si
+el archivo está en tu rama pero el servicio no lo ve, revisa en los logs de
+Render que el último deploy sea el de tu push.
 </details>
 
 ---
@@ -157,16 +172,19 @@ esperado aparece en el top-k (*hit*) y si aparece de primero (*hit@1*).
    contexto, más ruido para el modelo — mira el tamaño del bloque CONTEXTO).
 
 3. **Experimento B — chunking:** en `rag.py`, cambia `CHUNK_SIZE` (800 → 200,
-   luego → 3000) y `CHUNK_OVERLAP`. Para re-ingestar con el chunking nuevo en
-   local basta reiniciar el server (la base en memoria arranca vacía); en
-   Render, push + `POST /api/ingest` tras tocar cualquier doc. Usa
+   luego → 3000) y `CHUNK_OVERLAP`. Para re-ingestar con el chunking nuevo
+   basta reiniciar: en local, reinicia el server (el índice en memoria
+   arranca vacío); en Render, el push redeploya y re-ingesta solo. Usa
    `GET /api/debug/search?q=...` para VER los chunks que regresan con cada
    configuración. **Al final regresa a 800/100.**
 
 4. Pregunta de cierre: ¿qué combinación dio el mejor score y por qué crees?
 
 Este ejercicio no tiene test rojo→verde: su verificación es el score y la
-discusión.
+discusión. Los evals corren en tu máquina: sin `GEMINI_API_KEY` en tu `.env`
+usan los embeddings mock (los números de referencia de la guía son con mock);
+con la key usan Gemini de verdad y los números cambian — compara siempre
+contra TU línea base.
 
 ---
 
@@ -213,8 +231,9 @@ Cada chunk tiene <code>c.title</code>, <code>c.source</code>,
 </details>
 
 <details><summary>Pista 3 (conexión)</summary>
-Si Claude Code no conecta, valida primero con el Inspector. Si el redeploy
-de Render va lento, conéctate al server local:
+Si Claude Code no conecta, valida primero con el Inspector. Si el servicio
+estaba dormido (free tier), ábrelo en el navegador para despertarlo y
+reintenta. Si el redeploy de Render va lento, conéctate al server local:
 <code>http://localhost:3000/mcp</code> también funciona.
 </details>
 
