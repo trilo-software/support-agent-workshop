@@ -1,9 +1,10 @@
 name: setup-attendee
 
-# Corre esta Action UNA vez tras forkear el repo (pestaña Actions →
-# setup-attendee → Run workflow). Prefija los recursos del render.yaml con tu
-# usuario de GitHub para que no colisionen con los del resto de asistentes en
-# la organización de Render compartida.
+# Corre esta Action UNA vez sobre TU rama (pestaña Actions → setup-attendee →
+# Run workflow → «Use workflow from»: tu rama). Prefija los recursos del
+# render.yaml con tu usuario de GitHub para que no colisionen con los del
+# resto de asistentes en el workspace de Render compartido, y commitea el
+# cambio en tu rama.
 
 on:
   workflow_dispatch:
