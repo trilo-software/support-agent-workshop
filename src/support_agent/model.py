@@ -5,8 +5,15 @@ Formato interno de mensajes (independiente del proveedor):
     {"role": "system", "content": str}
     {"role": "user", "content": str}
     {"role": "assistant", "content": str}                 # respuesta de texto
-    {"role": "assistant", "tool_calls": [ToolCall, ...]}  # pedido de tools
+    {"role": "assistant", "tool_calls": [ToolCall, ...],  # pedido de tools
+     "raw_content": <Content del proveedor> | None}       #   (ver abajo)
     {"role": "tool", "name": str, "content": dict}        # resultado de un tool
+
+Sobre raw_content: los modelos Gemini 3 firman cada pedido de tool con un
+`thought_signature` y exigen recibirlo de vuelta en el siguiente turno; si
+reconstruimos la parte function_call desde cero, la API responde 400. Por eso
+ModelReply conserva el Content original del modelo y el agente lo reenvía tal
+cual. El mock no lo necesita (raw_content=None).
 
 El mock es 100 % determinista (mismos mensajes -> misma respuesta) para que
 los tests y la demo sin credenciales sean estables.
@@ -39,6 +46,9 @@ class ToolCall:
 class ModelReply:
     text: str | None = None
     tool_calls: list[ToolCall] = field(default_factory=list)
+    # Content original del proveedor cuando hay tool_calls (Gemini 3 exige
+    # devolverlo intacto, con sus thought_signature). None en el mock.
+    raw_content: object | None = None
 
 
 async def chat(messages: list[dict], tools: dict[str, Tool]) -> ModelReply:
@@ -121,7 +131,10 @@ def _to_gemini_contents(messages: list[dict]):
         if role == "user":
             contents.append(types.Content(role="user", parts=[types.Part.from_text(text=msg["content"])]))
         elif role == "assistant":
-            if msg.get("tool_calls"):
+            if msg.get("raw_content") is not None:
+                # Turno con tools del modelo real: se reenvía intacto (firmas).
+                contents.append(msg["raw_content"])
+            elif msg.get("tool_calls"):
                 parts = [
                     types.Part(function_call=types.FunctionCall(name=tc.name, args=tc.args))
                     for tc in msg["tool_calls"]
@@ -173,7 +186,10 @@ async def _chat_gemini(messages: list[dict], tools: dict[str, Tool]) -> ModelRep
             raise
 
     if response.function_calls:
-        return ModelReply(tool_calls=[
-            ToolCall(name=fc.name, args=dict(fc.args or {})) for fc in response.function_calls
-        ])
+        return ModelReply(
+            tool_calls=[
+                ToolCall(name=fc.name, args=dict(fc.args or {})) for fc in response.function_calls
+            ],
+            raw_content=response.candidates[0].content,
+        )
     return ModelReply(text=response.text or "")

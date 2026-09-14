@@ -59,7 +59,11 @@ async def run_agent(message: str, history: list[dict] | None = None) -> AgentRes
                 reply=reply.text or "", sources=sources, tool_calls_made=tool_calls_made
             )
 
-        messages.append({"role": "assistant", "tool_calls": reply.tool_calls})
+        messages.append({
+            "role": "assistant",
+            "tool_calls": reply.tool_calls,
+            "raw_content": reply.raw_content,
+        })
         for tc in reply.tool_calls:
             tool = TOOLS.get(tc.name)
             if tool is None:

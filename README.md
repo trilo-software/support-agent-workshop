@@ -190,7 +190,7 @@ uv run uvicorn support_agent.server:app --reload --port 3000
 | --- | --- | --- |
 | `GEMINI_API_KEY` | En Render la aporta el env group `gemini-workshop` | Sin ella, modo mock determinista (local y tests) |
 | `AGENT_MODEL` | No | `mock` fuerza el mock aunque haya key |
-| `GEMINI_MODEL` | No | Default `gemini-2.5-flash` |
+| `GEMINI_MODEL` | No | Default `gemini-3.6-flash` |
 | `GEMINI_EMBED_MODEL` | No | Default `gemini-embedding-001` (768 dims) |
 | `DATABASE_URL` | No | Sin ella, backend en memoria (así corre el workshop). Con ella, Postgres + pgvector |
 | `PORT` | No | Default `3000` (en Render la inyecta la plataforma) |
