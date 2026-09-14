@@ -46,16 +46,13 @@ mientras los servicios están despiertos.
       mismo correo (o con GitHub) antes.
 - [ ] Key de Gemini de un proyecto **con billing** (Tier 1), probada:
       `GEMINI_API_KEY=... uv run python -m support_agent.server` y un chat.
-- [ ] Cómo reparten la key. Dos opciones:
-      - **Pegarla al crear el Blueprint** (default del `render.yaml`,
-        `sync: false`): mándala por chat el día del workshop.
-      - **Env group compartido** (nadie pega nada): crea en el workspace el
-        env group `gemini-workshop` con `GEMINI_API_KEY`, y en `main` cambia
-        en `render.yaml` la entrada de `GEMINI_API_KEY` por
-        `- fromGroup: gemini-workshop`. Render exige que el grupo exista: si
-        no, el Blueprint falla con *«env var group linkage depends on
-        non-existent group»*. Valida antes con
-        `render blueprints validate render.yaml` (CLI de Render).
+- [ ] Env group `gemini-workshop` en el workspace del workshop con la
+      `GEMINI_API_KEY` **real** (no un valor provisional). `render.yaml` ya lo
+      enlaza con `fromGroup`, así que nadie pega nada. Render exige que el
+      grupo exista: si no, el Blueprint falla con *«env var group linkage
+      depends on non-existent group»*. Valida con
+      `render blueprints validate render.yaml` (CLI de Render, con ese
+      workspace activo).
 - [ ] Tu **deploy de referencia** funcionando (rama `referencia` + Blueprint
       en el mismo workspace, como un asistente más), y los ejercicios
       resueltos en una rama `soluciones` lista para enseñar.
@@ -78,7 +75,7 @@ mientras los servicios están despiertos.
 | «No veo el workspace del facilitador» | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto |
 | Build falla con `--frozen` | Tocaron `pyproject.toml` sin regenerar `uv.lock`. `git checkout uv.lock pyproject.toml` |
 | Blueprint falla: «non-existent group» | Usas `fromGroup` y el env group no existe en el workspace (o el nombre no coincide). Créalo y reintenta |
-| Deploy verde pero el chat da error 500 | Casi seguro pegaron mal la `GEMINI_API_KEY`. Verificar env var; escape: `AGENT_MODEL=mock` |
+| Deploy verde pero el chat da error 500 | La key del env group `gemini-workshop` es inválida o el grupo no quedó enlazado (Service → Environment). Escape: `AGENT_MODEL=mock` |
 | La URL tarda ~1 min o da timeout | Servicio free dormido. Esperar y recargar; arrancar el keep-alive si no está corriendo |
 | 429 de Gemini por toda la sala | Key saturada: que agreguen `AGENT_MODEL=mock` y sigan; el flujo completo funciona en mock |
 | «Run workflow no me deja elegir mi rama» | No hizo push de la rama (`git push -u origin tu-usuario`) o la creó con otro nombre. Recargar la página de Actions |
@@ -94,7 +91,7 @@ cierre (y apágalo al terminar).
 
 | Reloj | Dur | Módulo | Nota |
 | --- | --- | --- | --- |
-| 0:00 | 15 min | Setup: rama + Action + crear Blueprint (key de Gemini) | Mientras deploya: dibujar la arquitectura |
+| 0:00 | 15 min | Setup: rama + Action + crear Blueprint | Mientras deploya: dibujar la arquitectura |
 | 0:15 | 7 min | Demo del agente «tonto»: responde genérico, sin fuentes, alucina | Motivación de los ejercicios |
 | 0:22 | 10 min | Ejercicio 1: el system prompt | push → redeploy → comparar en vivo |
 | 0:32 | 15 min | Ejercicio 2: encender el RAG (TOP_K + ORDER BY) | El aha del Acto 1: aparecen las fuentes |
