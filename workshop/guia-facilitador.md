@@ -1,4 +1,4 @@
-# Guía del facilitador
+# Guía de Esteban
 
 Workshop de ~2 h 30, nivel introductorio, en dos actos:
 
@@ -72,7 +72,7 @@ mientras los servicios están despiertos.
 | Síntoma | Fix rápido |
 | --- | --- |
 | «No puedo crear el Blueprint: nombre en uso» | No corrió la Action `setup-attendee`. Actions → setup-attendee → Run workflow → recrear Blueprint |
-| «No veo el workspace del facilitador» | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto |
+| «No veo el workspace de Esteban» | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto |
 | Build falla con `--frozen` | Tocaron `pyproject.toml` sin regenerar `uv.lock`. `git checkout uv.lock pyproject.toml` |
 | Blueprint falla: «non-existent group» | Usas `fromGroup` y el env group no existe en el workspace (o el nombre no coincide). Créalo y reintenta |
 | Deploy verde pero el chat da error 500 | La key del env group `gemini-workshop` es inválida o el grupo no quedó enlazado (Service → Environment). Escape: `AGENT_MODEL=mock` |

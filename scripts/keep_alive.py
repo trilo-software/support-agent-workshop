@@ -6,7 +6,7 @@ tarda ~1 minuto en despertar. Este script hace GET /healthz a cada servicio
 cada N segundos (default 600 = 10 min) para que nadie se tope con el arranque
 en frío en medio de un ejercicio, sobre todo al volver del break.
 
-Uso (lo corre el facilitador en su máquina, en una terminal aparte):
+Uso (lo corre Esteban en su máquina, en una terminal aparte):
 
     uv run python scripts/keep_alive.py asistentes.txt
     uv run python scripts/keep_alive.py asistentes.txt --interval 300
