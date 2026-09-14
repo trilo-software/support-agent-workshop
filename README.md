@@ -46,7 +46,8 @@ correría ahí, y el backend en memoria la imita. Cómo encenderlo: ver
 - Cuenta de GitHub con acceso de escritura a este repo (te llegó una
   invitación como colaborador).
 - Cuenta en el workspace de Render del facilitador (te llegó una invitación).
-- Token de Gemini (te lo da el facilitador, o ya viene enlazado al servicio).
+- Key de Gemini: no necesitas una propia, ya está en el workspace (para
+  correr en local con Gemini real sí te sirve una en tu `.env`, opcional).
 - Para correr en local (opcional pero recomendado): Python ≥ 3.12, [`uv`](https://docs.astral.sh/uv/) y git.
 - Para el Ejercicio 5: Node.js ≥ 18 (`npx`) para el MCP Inspector, o Claude Code.
 
@@ -82,9 +83,8 @@ local, y commit + push.)*
    y elige **tu rama** en el selector de branch.
 2. Render lee el `render.yaml` y propone **un web service en plan free**. No
    hay base de datos que crear.
-3. Si te pide el valor de **`GEMINI_API_KEY`**, pega el token que te dio el
-   facilitador. *(Si el facilitador enlazó un env group compartido, no te lo
-   pide.)*
+3. La key de Gemini ya viene enlazada desde el env group `gemini-workshop`
+   del workspace: no tienes que pegar nada.
 4. **Apply** y espera el primer deploy (~2–4 min). El servicio queda en una
    URL tipo `https://tu-usuario-support-agent.onrender.com`.
 
@@ -188,7 +188,7 @@ uv run uvicorn support_agent.server:app --reload --port 3000
 
 | Var | Requerida | Notas |
 | --- | --- | --- |
-| `GEMINI_API_KEY` | En Render sí | Sin ella, modo mock determinista (local y tests) |
+| `GEMINI_API_KEY` | En Render la aporta el env group `gemini-workshop` | Sin ella, modo mock determinista (local y tests) |
 | `AGENT_MODEL` | No | `mock` fuerza el mock aunque haya key |
 | `GEMINI_MODEL` | No | Default `gemini-2.5-flash` |
 | `GEMINI_EMBED_MODEL` | No | Default `gemini-embedding-001` (768 dims) |

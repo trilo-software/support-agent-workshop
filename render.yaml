@@ -23,8 +23,9 @@ projects:
       envVars:
       - key: PYTHON_VERSION
         value: '3.12'
-      # La key de Gemini la pone el facilitador: al crear el Blueprint, Render
-      # pide el valor (sync: false). Alternativa sin pegar nada: un env group
-      # compartido del workspace (ver guía del facilitador).
-      - key: GEMINI_API_KEY
-        sync: false
+      # La key de Gemini viene del env group `gemini-workshop` del workspace
+      # (lo administra el facilitador: nadie pega nada). Render exige que el
+      # grupo exista. Si despliegas en otro workspace sin ese grupo, cámbialo
+      # por:  - key: GEMINI_API_KEY
+      #         sync: false
+      - fromGroup: gemini-workshop
