@@ -2,7 +2,7 @@
 #
 # - El RAG vive en memoria: la ingesta de kb/*.md corre al arrancar (y cada vez
 #   que el free tier despierta). Los pedidos de semilla y los tickets viven en
-#   el proceso y se pierden al reiniciar: aceptable para el workshop.
+#   el proceso y se pierden al reiniciar.
 # - Free tier: el servicio se duerme tras 15 min sin tráfico y tarda ~1 min en
 #   despertar. Ver scripts/keep_alive.py.
 # - Variante con Postgres + pgvector (opcional, para después): README.
@@ -24,7 +24,7 @@ projects:
       - key: PYTHON_VERSION
         value: '3.12'
       # La key de Gemini viene del env group `gemini-workshop` del workspace
-      # (lo administra el facilitador: nadie pega nada). Render exige que el
+      # (lo administra Esteban: nadie pega nada). Render exige que el
       # grupo exista. Si despliegas en otro workspace sin ese grupo, cámbialo
       # por:  - key: GEMINI_API_KEY
       #         sync: false

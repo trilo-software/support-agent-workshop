@@ -45,7 +45,7 @@ correría ahí, y el backend en memoria la imita. Cómo encenderlo: ver
 
 - Cuenta de GitHub con acceso de escritura a este repo (te llegó una
   invitación como colaborador).
-- Cuenta en el workspace de Render del facilitador (te llegó una invitación).
+- Cuenta en el workspace de Render de Esteban (te llegó una invitación).
 - Key de Gemini: no necesitas una propia, ya está en el workspace (para
   correr en local con Gemini real sí te sirve una en tu `.env`, opcional).
 - Para correr en local (opcional pero recomendado): Python ≥ 3.12, [`uv`](https://docs.astral.sh/uv/) y git.
@@ -79,7 +79,7 @@ local, y commit + push.)*
 ## Paso 1 — Deploy del Blueprint en Render
 
 1. En el [dashboard de Render](https://dashboard.render.com), dentro del
-   workspace del facilitador: **New +** → **Blueprint** → conecta este repo
+   workspace de Esteban: **New +** → **Blueprint** → conecta este repo
    y elige **tu rama** en el selector de branch.
 2. Render lee el `render.yaml` y propone **un web service en plan free**. No
    hay base de datos que crear.
@@ -94,10 +94,10 @@ tu URL**.
 
 > **Free tier, dos cosas que vas a notar.** (1) El servicio **se duerme tras
 > 15 min sin tráfico** y tarda ~1 min en despertar: si tu URL «no carga»,
-> espera y recarga. El facilitador corre un keep-alive durante el workshop
+> espera y recarga. Esteban corre un keep-alive durante el workshop
 > para que pase lo menos posible. (2) Cada deploy y cada despertar **arranca
 > con la memoria vacía**: la ingesta vuelve a correr (unos segundos) y los
-> tickets creados antes se pierden. Para el workshop es aceptable.
+> tickets creados antes se pierden.
 
 ## Paso 2 — Pruébalo (y mira cómo responde de mal)
 
@@ -105,8 +105,10 @@ Abre tu URL y pregunta en el chat:
 
 > ¿Cuánto tarda el envío a Cartago?
 
-La respuesta es genérica, sin fuentes, o directamente inventada. No está
-roto el deploy: está roto el agente, a propósito. Los ejercicios lo arreglan.
+La respuesta es genérica, sin fuentes, inventada, o el agente escala TODO a
+un humano (badge 🔧 `escalate_to_human` hasta para un «hola»): sin contexto,
+es lo único que sabe hacer. No está roto el deploy: está roto el agente, a
+propósito. Los ejercicios lo arreglan.
 
 ## Los ejercicios
 
