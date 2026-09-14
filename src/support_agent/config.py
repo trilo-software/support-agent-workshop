@@ -31,8 +31,13 @@ def gemini_api_key() -> str:
 
 
 def gemini_model() -> str:
-    """Modelo de chat. NUNCA se hardcodea fuera de esta función."""
-    return os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+    """Modelo de chat. NUNCA se hardcodea fuera de esta función.
+
+    gemini-2.5-flash ya no está disponible para proyectos nuevos de Google
+    (set-2026); los Gemini 3 exigen thought signatures en tool calling (ver
+    model.py).
+    """
+    return os.environ.get("GEMINI_MODEL", "gemini-3.6-flash").strip()
 
 
 def gemini_embed_model() -> str:

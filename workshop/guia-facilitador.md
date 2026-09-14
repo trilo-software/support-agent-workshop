@@ -329,11 +329,13 @@ TOOLS: dict[str, Tool] = {
 
 ## Notas operativas
 
-- **Modelos**: defaults `gemini-2.5-flash` y `gemini-embedding-001` (vigentes
-  a set-2026). Ambos son configurables por env var; si quieres probar la
-  serie Gemini 3, basta `GEMINI_MODEL=gemini-3.5-flash` en el servicio. NO
-  cambies `GEMINI_EMBED_MODEL` a mitad de workshop: otro modelo = otro
-  espacio de embeddings = re-ingestar todo.
+- **Modelos**: defaults `gemini-3.6-flash` y `gemini-embedding-001` (vigentes
+  a set-2026; `gemini-2.5-flash` ya no está disponible para proyectos nuevos
+  de Google). Ambos son configurables por env var; otro Gemini 3 (p. ej.
+  `GEMINI_MODEL=gemini-3.8-flash`) funciona igual. Los Gemini 3 exigen
+  devolver el `thought_signature` en tool calling: el agente ya lo hace
+  (`raw_content` en `model.py`). NO cambies `GEMINI_EMBED_MODEL` a mitad de
+  workshop: otro modelo = otro espacio de embeddings = re-ingestar todo.
 - **Mock como red de seguridad**: TODO el workshop (incluido MCP) funciona
   con `AGENT_MODEL=mock`. Si Gemini se cae o los 429 arrecian, el show sigue.
 - **Keep-alive**: `scripts/keep_alive.py` solo usa la biblioteca estándar;
