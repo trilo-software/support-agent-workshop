@@ -25,7 +25,7 @@ from . import check_order_status, escalate_to_human  # noqa: E402
 # check_order_status ya está implementado (míralo en
 # check_order_status.py) pero nadie lo registró, así que el agente
 # no puede consultar pedidos. Agrégalo al registry.
-# Verifica:  pytest -m ejercicio tests/ejercicios/test_bonus_tool.py
+# Verifica:  uv run pytest -m ejercicio tests/ejercicios/test_bonus_tool.py
 # Prueba en la UI: "¿cómo va mi pedido CR-1003?"
 # ─────────────────────────────────────────────────────────────────
 TOOLS: dict[str, Tool] = {

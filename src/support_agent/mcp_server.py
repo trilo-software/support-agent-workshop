@@ -62,7 +62,7 @@ async def escalate_to_human(summary: str) -> dict:
 # Fíjate cómo check_order_status (aquí arriba) envuelve su handler:
 # es el mismo patrón. La descripción del tool importa: es lo que el
 # cliente MCP lee para decidir cuándo usarlo.
-# Verifica:  pytest -m ejercicio tests/ejercicios/test_ejercicio_5_mcp.py
+# Verifica:  uv run pytest -m ejercicio tests/ejercicios/test_ejercicio_5_mcp.py
 # ─────────────────────────────────────────────────────────────────
 @mcp.tool(
     description=(
