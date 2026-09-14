@@ -105,8 +105,10 @@ Abre tu URL y pregunta en el chat:
 
 > ¿Cuánto tarda el envío a Cartago?
 
-La respuesta es genérica, sin fuentes, o directamente inventada. No está
-roto el deploy: está roto el agente, a propósito. Los ejercicios lo arreglan.
+La respuesta es genérica, sin fuentes, inventada, o el agente escala TODO a
+un humano (badge 🔧 `escalate_to_human` hasta para un «hola»): sin contexto,
+es lo único que sabe hacer. No está roto el deploy: está roto el agente, a
+propósito. Los ejercicios lo arreglan.
 
 ## Los ejercicios
 

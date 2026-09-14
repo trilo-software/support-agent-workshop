@@ -129,9 +129,12 @@ como vectores numpy de 768 dims; con Postgres, en la tabla `chunks`, columna
 ### Demo del agente tonto (0:15)
 
 En tu deploy de referencia SIN resolver: pregunta «¿cuánto tarda el envío a
-Cartago?» → genérico, sin chips de fuentes. Pregunta «¿tienen descuento?» →
-inventa o no sabe. Mensaje: *el deploy está verde; el agente está mal — y
-eso es lo normal en el primer intento de RAG. Hoy lo arreglamos midiendo.*
+Cartago?» → sin chips de fuentes, y con Gemini 3.6 lo típico es que **escale
+todo a un humano** (badge 🔧 `escalate_to_human`, ticket #1, #2, #3…) porque
+no tiene contexto; otras veces responde genérico o inventa. Pregunta
+«¿tienen descuento?» → lo mismo. Mensaje: *el deploy está verde; el agente
+está mal — y eso es lo normal en el primer intento de RAG. Hoy lo arreglamos
+midiendo.*
 
 ### Ejercicio 1 (0:22)
 
