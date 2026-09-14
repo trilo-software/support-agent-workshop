@@ -8,8 +8,15 @@ con monkeypatch sin reimportar nada.
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Raíz del repo: src/support_agent/config.py -> src/support_agent -> src -> raíz
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+# Para correr en local: carga <raíz>/.env si existe (copia .env.example). No
+# pisa variables que ya estén definidas en el entorno; en Render no hay .env y
+# las variables vienen del dashboard.
+load_dotenv(REPO_ROOT / ".env")
 KB_DIR = REPO_ROOT / "kb"
 EVALS_FILE = REPO_ROOT / "evals" / "preguntas.yaml"
 UI_FILE = Path(__file__).resolve().parent / "ui" / "chat.html"

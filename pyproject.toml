@@ -12,6 +12,7 @@ dependencies = [
     "pyyaml>=6.0",
     "asyncpg>=0.30",
     "numpy>=2.0",
+    "python-dotenv>=1.2.2",
 ]
 
 [tool.uv]

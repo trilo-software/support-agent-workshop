@@ -10,7 +10,7 @@ Uso:
     python scripts/setup_attendee.py <github-username> [ruta/al/render.yaml]
 
 La Action .github/workflows/setup-attendee.yml lo corre por ti con tu usuario
-y commitea el resultado al fork.
+y commitea el resultado en tu rama.
 """
 
 from __future__ import annotations

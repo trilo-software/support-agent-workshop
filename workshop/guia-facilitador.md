@@ -17,19 +17,52 @@ Las dos ideas que la gente debe llevarse (repítelas en el cierre):
 
 ---
 
+## Cómo está montado
+
+Todos trabajan en **ramas del mismo repo** (una por asistente, con su usuario
+de GitHub; `main` protegida) y despliegan en **tu workspace de Render**, cada
+uno **un web service en plan free, sin base de datos** (RAG en memoria).
+
+Free tier, lo que hay que tener presente: el servicio **se duerme a los 15
+min sin tráfico** y tarda ~1 min en despertar; cada deploy y cada despertar
+arranca con la memoria vacía (re-ingesta la KB: 7 llamadas de embedding; los
+tickets se pierden). El script `scripts/keep_alive.py` pinguea todos los
+servicios cada 10 min para que nadie se tope con el arranque en frío en medio
+de un ejercicio. Las «free instance hours» del workspace solo se consumen
+mientras los servicios están despiertos.
+
+**Al terminar borra los proyectos de los asistentes** (Dashboard → proyecto
+→ Settings → Delete project) y, si quieres, sus ramas.
+
+---
+
 ## Checklist pre-vuelo (el día antes)
 
-- [ ] Tu **deploy de referencia** funcionando (fork propio + Blueprint), con
-      los ejercicios resueltos en una rama (`soluciones`) lista para enseñar.
-- [ ] Invitaciones a la organización de Render enviadas a los asistentes.
-- [ ] Tokens de Gemini generados y probados (uno por asistente, o uno
-      compartido — ver env group abajo). Prueba UN token de asistente de
-      verdad: `GEMINI_API_KEY=... uv run python -m support_agent.server` y un
-      chat.
-- [ ] Si usas key compartida: **env group** creado en el team de Render
-      (p. ej. `gemini-workshop` con `GEMINI_API_KEY`). Los asistentes lo
-      vinculan al servicio tras el primer deploy (Service → Environment →
-      Link env group), o cambias el yaml a `fromGroup: gemini-workshop`.
+- [ ] Asistentes agregados como **colaboradores** del repo en GitHub (acceso
+      de escritura) e invitaciones aceptadas. `main` **protegida** (Settings →
+      Branches → require a pull request) para que nadie pushee ahí por error.
+- [ ] Invitaciones al workspace de Render enviadas a los asistentes (rol
+      **Developer**) y aceptadas: pídeles que creen su cuenta de Render con el
+      mismo correo (o con GitHub) antes.
+- [ ] Key de Gemini de un proyecto **con billing** (Tier 1), probada:
+      `GEMINI_API_KEY=... uv run python -m support_agent.server` y un chat.
+- [ ] Cómo reparten la key. Dos opciones:
+      - **Pegarla al crear el Blueprint** (default del `render.yaml`,
+        `sync: false`): mándala por chat el día del workshop.
+      - **Env group compartido** (nadie pega nada): crea en el workspace el
+        env group `gemini-workshop` con `GEMINI_API_KEY`, y en `main` cambia
+        en `render.yaml` la entrada de `GEMINI_API_KEY` por
+        `- fromGroup: gemini-workshop`. Render exige que el grupo exista: si
+        no, el Blueprint falla con *«env var group linkage depends on
+        non-existent group»*. Valida antes con
+        `render blueprints validate render.yaml` (CLI de Render).
+- [ ] Tu **deploy de referencia** funcionando (rama `referencia` + Blueprint
+      en el mismo workspace, como un asistente más), y los ejercicios
+      resueltos en una rama `soluciones` lista para enseñar.
+- [ ] `asistentes.txt` con el usuario de GitHub de cada asistente (uno por
+      línea) más la URL de tu deploy de referencia, para el keep-alive:
+      `uv run python scripts/keep_alive.py asistentes.txt --once` debe dar
+      200 en tu referencia (los demás aún no existen).
 - [ ] `npx @modelcontextprotocol/inspector` corre en tu máquina y conecta a
       tu deploy de referencia (`/mcp`).
 - [ ] Claude Code instalado y probado con
@@ -42,29 +75,36 @@ Las dos ideas que la gente debe llevarse (repítelas en el cierre):
 | Síntoma | Fix rápido |
 | --- | --- |
 | «No puedo crear el Blueprint: nombre en uso» | No corrió la Action `setup-attendee`. Actions → setup-attendee → Run workflow → recrear Blueprint |
+| «No veo el workspace del facilitador» | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto |
 | Build falla con `--frozen` | Tocaron `pyproject.toml` sin regenerar `uv.lock`. `git checkout uv.lock pyproject.toml` |
+| Blueprint falla: «non-existent group» | Usas `fromGroup` y el env group no existe en el workspace (o el nombre no coincide). Créalo y reintenta |
 | Deploy verde pero el chat da error 500 | Casi seguro pegaron mal la `GEMINI_API_KEY`. Verificar env var; escape: `AGENT_MODEL=mock` |
-| 429 de Gemini por toda la sala | Key compartida saturada: que agreguen `AGENT_MODEL=mock` y sigan; el flujo completo funciona en mock |
-| «No veo la pestaña Actions» | Los forks traen las Actions deshabilitadas: botón verde «I understand… enable them» |
-| Postgres tarda en crear | Normal 1–2 min; el servicio reintenta la conexión al arrancar |
+| La URL tarda ~1 min o da timeout | Servicio free dormido. Esperar y recargar; arrancar el keep-alive si no está corriendo |
+| 429 de Gemini por toda la sala | Key saturada: que agreguen `AGENT_MODEL=mock` y sigan; el flujo completo funciona en mock |
+| «Run workflow no me deja elegir mi rama» | No hizo push de la rama (`git push -u origin tu-usuario`) o la creó con otro nombre. Recargar la página de Actions |
+| `git push` da «permission denied» | No aceptó la invitación de colaborador en GitHub, o intenta pushear a `main` (protegida): que cree su rama |
 
 ---
 
 ## Run sheet (2 h 30)
 
+Desde el minuto 0, en una terminal aparte:
+`uv run python scripts/keep_alive.py asistentes.txt`. Déjalo correr hasta el
+cierre (y apágalo al terminar).
+
 | Reloj | Dur | Módulo | Nota |
 | --- | --- | --- | --- |
-| 0:00 | 15 min | Setup: fork + Action + crear Blueprint (pegar key de Gemini) | Mientras deploya: dibujar la arquitectura |
+| 0:00 | 15 min | Setup: rama + Action + crear Blueprint (key de Gemini) | Mientras deploya: dibujar la arquitectura |
 | 0:15 | 7 min | Demo del agente «tonto»: responde genérico, sin fuentes, alucina | Motivación de los ejercicios |
 | 0:22 | 10 min | Ejercicio 1: el system prompt | push → redeploy → comparar en vivo |
 | 0:32 | 15 min | Ejercicio 2: encender el RAG (TOP_K + ORDER BY) | El aha del Acto 1: aparecen las fuentes |
 | 0:47 | 10 min | Ejercicio 3: `kb/promociones.md` + ingesta idempotente | «La KB es solo markdown en git» |
 | 0:57 | 8 min | Bonus: registrar `check_order_status` | O de buffer si van atrasados |
-| 1:05 | 10 min | **Break** | |
+| 1:05 | 10 min | **Break** | El keep-alive evita que se duerman |
 | 1:15 | 25 min | Ejercicio 4: mini-evals + experimentos de top-k y chunking | «Sin evals, cambias a ciegas» |
 | 1:40 | 8 min | Intro a MCP: qué es, por qué existe, diagrama cliente/servidor | Anclar con lo que YA construyeron |
 | 1:48 | 30 min | Ejercicio 5: completar `buscar_kb` + conectar Inspector/Claude Code | El aha del Acto 2: Claude usa SU RAG |
-| 2:18 | 12 min | Cierre: límites del patrón naive, teaser colas/Workflows, se llevan el fork | Exit ticket |
+| 2:18 | 12 min | Cierre: límites del patrón naive, teaser colas/Workflows, se llevan su rama | Exit ticket |
 
 **Flex:** el bonus y el experimento B (chunking) del Ejercicio 4 son
 recortables. El Ejercicio 5 **nunca**: es la razón del enfoque MCP. Si el
@@ -78,12 +118,16 @@ local (`http://localhost:3000/mcp`): desbloquea igual.
 ### Setup (0:00)
 
 Mientras los deploys corren, dibuja la arquitectura del README en la pizarra.
-Puntos: *un* web service (FastAPI), *una* Postgres con pgvector, y TODO el
-trabajo del agente pasa dentro del request HTTP («patrón naive» — planta la
-semilla del cierre). La ingesta corre al arrancar y es idempotente por hash.
+Puntos: *un* web service (FastAPI) en free, el índice de embeddings **en
+memoria** dentro del proceso, y TODO el trabajo del agente pasa dentro del
+request HTTP («patrón naive» — planta la semilla del cierre). La ingesta
+corre al arrancar y es idempotente por hash. Di en voz alta que el código de
+Postgres + pgvector está en el repo y se enciende con `DATABASE_URL` (variante
+del README): hoy no lo usamos: en free tier solo hay una Postgres por workspace.
 
-CFU (check for understanding): «¿dónde viven los embeddings?» (en la tabla
-`chunks`, columna `vector(768)`).
+CFU (check for understanding): «¿dónde viven los embeddings?» (en memoria,
+como vectores numpy de 768 dims; con Postgres, en la tabla `chunks`, columna
+`vector(768)`).
 
 ### Demo del agente tonto (0:15)
 
@@ -113,9 +157,12 @@ del SELECT es 1−distancia, por eso mayor = mejor).
 
 ### Ejercicio 3 (0:47)
 
-Mensaje: *alimentar la KB no es tocar código, es git*. Enseña el log de la
-ingesta (`ingesta: 6 documentos, 1 nuevos…`): idempotencia por sha256 = solo
-el archivo nuevo gasta embeddings.
+Mensaje: *alimentar la KB no es tocar código, es git*. Tras el push, el log
+del deploy muestra `ingesta: 6 documentos, 6 nuevos…` (memoria: cada arranque
+embebe todo). Luego la idempotencia en vivo: `curl -X POST
+https://<tu-ref>.onrender.com/api/ingest` dos veces seguidas → `ingresados:
+0`, cero llamadas de embedding. Si tienes el server local abierto, la versión
+vistosa: crea el archivo, `POST /api/ingest` → `ingresados: 1`, sin reiniciar.
 
 ### Bonus (0:57)
 
@@ -130,6 +177,10 @@ más k = más recall pero más tokens y más ruido. El experimento B (chunking)
 en parejas si hay tiempo. Cierra con: «¿qué combinación ganó y por qué?» —
 no hay respuesta única, ese es el punto: por eso se mide.
 
+Los evals corren en la laptop de cada quien. Sin key en su `.env` usan el
+mock (números de referencia abajo); con key, Gemini real y otros números.
+Lo que importa es comparar contra su propia línea base.
+
 ### Intro a MCP (1:40)
 
 Definición en una frase: *USB-C para capacidades de IA — un protocolo
@@ -143,6 +194,8 @@ mejor: su retrieval».
 
 La joya. 4 líneas de código y luego la conexión. Orden recomendado: primero
 TODOS validan con el Inspector (garantizado), luego Claude Code para el wow.
+Antes de que conecten, que cada quien abra su URL en el navegador: así el
+servicio está despierto y la primera llamada MCP no muere por timeout.
 Cuando Claude responda usando `buscar_kb` de su servicio, di la frase:
 
 > «El mismo `retrieve()` que arreglaron en el Ejercicio 2 lo acaba de usar
@@ -155,9 +208,12 @@ lectura); en producción, OAuth/token.
 ### Cierre (2:18)
 
 Límites del naive: timeouts, deploys que pierden trabajo en vuelo, sin
-concurrencia real (léelo del docstring de `server.py`). Teaser: colas +
-workers / Render Workflows. Extensiones: retrieval-as-a-tool, auth MCP, evals
-de respuesta con LLM-juez. Se llevan el fork completo funcionando.
+concurrencia real (léelo del docstring de `server.py`). Y el límite de hoy:
+el índice en memoria muere con cada reinicio — primer paso real hacia
+producción: Postgres + pgvector (ya está en el código). Teaser: colas +
+workers / Render Workflows. Extensiones: retrieval-as-a-tool, auth MCP,
+evals de respuesta con LLM-juez. Se llevan su rama completa funcionando (y
+pueden hacer fork del repo para conservarla).
 
 Exit ticket (2 preguntas): «¿qué pieza de RAG te sorprendió por simple?» y
 «¿qué conectarías por MCP en tu trabajo?».
@@ -277,17 +333,19 @@ TOOLS: dict[str, Tool] = {
 ## Notas operativas
 
 - **Modelos**: defaults `gemini-2.5-flash` y `gemini-embedding-001` (vigentes
-  a jul-2026). Ambos son configurables por env var; si quieres probar la
+  a set-2026). Ambos son configurables por env var; si quieres probar la
   serie Gemini 3, basta `GEMINI_MODEL=gemini-3.5-flash` en el servicio. NO
   cambies `GEMINI_EMBED_MODEL` a mitad de workshop: otro modelo = otro
   espacio de embeddings = re-ingestar todo.
 - **Mock como red de seguridad**: TODO el workshop (incluido MCP) funciona
   con `AGENT_MODEL=mock`. Si Gemini se cae o los 429 arrecian, el show sigue.
-- **Costos**: cada asistente crea `basic-256mb` (Postgres) + `starter` (web).
-  **Al terminar el workshop, borra los proyectos del team** (Dashboard →
-  proyecto de cada asistente → Settings → Delete project). Recuérdalo en el
-  cierre también para quienes desplegaron en su workspace personal.
-- **Free tier**: ver README. En la organización compartida NO sirve (una sola
-  Postgres free por workspace); en workspaces personales sí.
-- **Sesiones MCP en free tier**: el spin-down corta la conexión; el primer
-  request la despierta — reintentar.
+- **Keep-alive**: `scripts/keep_alive.py` solo usa la biblioteca estándar;
+  acepta usuarios de GitHub o URLs completas, y `--once` para probar. Apágalo
+  al terminar: mientras corre, los 18 servicios consumen free instance hours.
+- **Sesiones MCP y spin-down**: el servidor MCP es `stateless_http`, así que
+  un despertar no invalida nada; solo la primera llamada puede dar timeout.
+  Reintentar.
+- **Postgres + pgvector**: variante en el README, validada con `render
+  blueprints validate`. En el workspace compartido no sirve en free (una sola
+  Postgres free por workspace); si algún día quieres bases para todos, tienen
+  que ser de pago (una por asistente): bórralas al terminar.

@@ -3,9 +3,9 @@
 Vas a construir, medir y exponer un **agente de soporte al cliente** para
 **Café Pura Vida**, una tienda ficticia de café de especialidad costarricense.
 El agente responde usando **RAG** (Retrieval-Augmented Generation) sobre una
-base de conocimiento en **Postgres + pgvector**, con **Gemini** como modelo, y
-al final expone su retrieval como **servidor MCP** para que Claude (o
-cualquier cliente MCP) lo consuma.
+base de conocimiento en markdown, con **Gemini** como modelo, y al final
+expone su retrieval como **servidor MCP** para que Claude (o cualquier cliente
+MCP) lo consuma.
 
 El repo llega **deliberadamente incompleto**: deploya y responde, pero
 responde mal. Tu trabajo son 5 ejercicios (+1 bonus) que lo arreglan pieza
@@ -13,22 +13,18 @@ por pieza — y cada arreglo se ve en vivo en tu servicio desplegado.
 
 ```
                      ┌──────────────────────────────────────────┐
-  Navegador ────────▶│  Web Service (FastAPI) — «naive agent»   │
+  Navegador ────────▶│  Web Service free (FastAPI) — «naive»    │
   (chat UI)  POST    │                                          │
              /api/…  │  1. embed(pregunta)     ──▶ Gemini embed │
-                     │  2. retrieve(top_k)     ──▶ pgvector     │
-  Claude Code /      │  3. loop agente + tools ──▶ Gemini chat  │
-  MCP Inspector ────▶│  4. respuesta + fuentes citadas          │
-  (cliente MCP) /mcp │                                          │
+                     │  2. retrieve(top_k)     ──▶ índice en    │
+  Claude Code /      │                             memoria      │
+  MCP Inspector ────▶│  3. loop agente + tools ──▶ Gemini chat  │
+  (cliente MCP) /mcp │  4. respuesta + fuentes citadas          │
+                     │                                          │
                      │  /mcp → servidor MCP: buscar_kb, pedidos │
-                     └───────────────────┬──────────────────────┘
-                                         │
-                              ┌──────────▼──────────┐
-                              │   Render Postgres   │
-                              │  pgvector · orders  │
-                              └─────────────────────┘
+                     └──────────────────────────────────────────┘
 
-  Ingesta (al arrancar, idempotente): kb/*.md → chunks → embeddings
+  Ingesta (al arrancar, idempotente): kb/*.md → chunks → embeddings → memoria
 ```
 
 **Las dos ideas del workshop:** (a) un agente con RAG no es magia — es trocear
@@ -38,37 +34,70 @@ es magia — es el protocolo estándar para que cualquier cliente consuma las
 capacidades que TÚ construiste, sin escribir un endpoint específico para cada
 uno.
 
+**Sobre la base de datos:** en el workshop el RAG vive **en memoria** dentro
+del web service (plan free de Render, sin Postgres). El código para
+**Postgres + pgvector** está incluido y se activa con una sola variable
+(`DATABASE_URL`): la query SQL que arreglas en el Ejercicio 2 es la que
+correría ahí, y el backend en memoria la imita. Cómo encenderlo: ver
+[Variante con Postgres + pgvector](#variante-con-postgres--pgvector).
+
 ## Requisitos
 
-- Cuenta en la organización de Render del facilitador (te llegó una invitación).
-- Token de Gemini (te lo da el facilitador).
-- Cuenta de GitHub.
+- Cuenta de GitHub con acceso de escritura a este repo (te llegó una
+  invitación como colaborador).
+- Cuenta en el workspace de Render del facilitador (te llegó una invitación).
+- Token de Gemini (te lo da el facilitador, o ya viene enlazado al servicio).
 - Para correr en local (opcional pero recomendado): Python ≥ 3.12, [`uv`](https://docs.astral.sh/uv/) y git.
+- Para el Ejercicio 5: Node.js ≥ 18 (`npx`) para el MCP Inspector, o Claude Code.
 
-## Paso 0 — Fork + Action `setup-attendee`
+## Paso 0 — Tu rama + Action `setup-attendee`
 
-1. Haz **fork** de este repo a tu cuenta de GitHub.
-2. En tu fork: pestaña **Actions** → habilita los workflows → elige
-   **setup-attendee** → **Run workflow**.
+Cada asistente trabaja en **su propia rama** de este repo, con el nombre de
+su usuario de GitHub. `main` está protegida: no hagas push ahí.
+
+1. Clona el repo y crea tu rama:
+
+   ```bash
+   git clone https://github.com/trilo-software/support-agent-workshop.git
+   cd support-agent-workshop
+   git checkout -b tu-usuario
+   git push -u origin tu-usuario
+   ```
+
+2. En GitHub: pestaña **Actions** → **setup-attendee** → **Run workflow** →
+   en «Use workflow from» elige **tu rama** → **Run workflow**.
 
 La Action prefija los recursos del `render.yaml` con tu usuario de GitHub
 (`tu-usuario-support-agent`, etc.) para que no colisionen con los del resto
-de asistentes en la organización compartida de Render.
+de asistentes en el workspace compartido de Render, y commitea el cambio en
+tu rama. Haz `git pull` para traértelo.
+
+*(Sin la Action: `uv run python scripts/setup_attendee.py tu-usuario` en
+local, y commit + push.)*
 
 ## Paso 1 — Deploy del Blueprint en Render
 
-1. En el [dashboard de Render](https://dashboard.render.com): **New +** →
-   **Blueprint** → conecta tu fork.
-2. Render lee el `render.yaml` y propone un web service + una base Postgres.
-3. Te pedirá el valor de **`GEMINI_API_KEY`**: pega el token que te dio el
-   facilitador. *(Alternativa: el facilitador puede tener un env group
-   compartido — pregunta.)*
-4. **Apply** y espera el primer deploy (~3–5 min). El servicio queda en una
+1. En el [dashboard de Render](https://dashboard.render.com), dentro del
+   workspace del facilitador: **New +** → **Blueprint** → conecta este repo
+   y elige **tu rama** en el selector de branch.
+2. Render lee el `render.yaml` y propone **un web service en plan free**. No
+   hay base de datos que crear.
+3. Si te pide el valor de **`GEMINI_API_KEY`**, pega el token que te dio el
+   facilitador. *(Si el facilitador enlazó un env group compartido, no te lo
+   pide.)*
+4. **Apply** y espera el primer deploy (~2–4 min). El servicio queda en una
    URL tipo `https://tu-usuario-support-agent.onrender.com`.
 
-Con `autoDeploy: true`, cada `git push` a tu fork redeploya solo. Ese es el
+Con `autoDeploy: true`, cada `git push` a tu rama redeploya solo. Ese es el
 ciclo de todos los ejercicios: **edita → commit → push → mira el cambio en
 tu URL**.
+
+> **Free tier, dos cosas que vas a notar.** (1) El servicio **se duerme tras
+> 15 min sin tráfico** y tarda ~1 min en despertar: si tu URL «no carga»,
+> espera y recarga. El facilitador corre un keep-alive durante el workshop
+> para que pase lo menos posible. (2) Cada deploy y cada despertar **arranca
+> con la memoria vacía**: la ingesta vuelve a correr (unos segundos) y los
+> tickets creados antes se pierden. Para el workshop es aceptable.
 
 ## Paso 2 — Pruébalo (y mira cómo responde de mal)
 
@@ -128,11 +157,16 @@ conectores remotos).
 > ⚠ El endpoint `/mcp` va **sin autenticación** en este workshop: es de solo
 > lectura sobre datos ficticios. En producción se protegería con OAuth o un
 > token (el SDK de MCP soporta ambos).
+>
+> Si el servicio estaba dormido, la primera llamada del cliente MCP puede
+> fallar por timeout: abre tu URL en el navegador para despertarlo y
+> reintenta.
 
 ## Correr en local
 
 ```bash
 uv sync                                # instala dependencias
+cp .env.example .env                   # opcional: pega tu GEMINI_API_KEY (se carga solo)
 uv run pytest                          # suite normal (verde desde el inicio)
 uv run pytest -m ejercicio             # tu progreso en los ejercicios
 uv run python -m support_agent.server  # http://localhost:3000
@@ -144,6 +178,12 @@ determinista con la base **en memoria**: sin credenciales, sin Postgres, sin
 red. Las respuestas empiezan con `[mock]`, pero el RAG, los tools, los evals
 y el MCP funcionan de verdad — ideal para desarrollar.
 
+Para que el servidor recargue solo al guardar un archivo:
+
+```bash
+uv run uvicorn support_agent.server:app --reload --port 3000
+```
+
 ## Variables de entorno
 
 | Var | Requerida | Notas |
@@ -152,34 +192,61 @@ y el MCP funcionan de verdad — ideal para desarrollar.
 | `AGENT_MODEL` | No | `mock` fuerza el mock aunque haya key |
 | `GEMINI_MODEL` | No | Default `gemini-2.5-flash` |
 | `GEMINI_EMBED_MODEL` | No | Default `gemini-embedding-001` (768 dims) |
-| `DATABASE_URL` | En Render la inyecta el Blueprint | Sin ella, backend en memoria |
-| `PORT` | No | Default `3000` |
+| `DATABASE_URL` | No | Sin ella, backend en memoria (así corre el workshop). Con ella, Postgres + pgvector |
+| `PORT` | No | Default `3000` (en Render la inyecta la plataforma) |
 
-## Variante free tier
+En local, la app carga `<raíz>/.env` si existe (sin pisar variables ya
+exportadas).
 
-El Blueprint funciona con planes gratuitos, con restricciones:
+## Variante con Postgres + pgvector
 
-- **Solo una Postgres free por workspace**: en la organización compartida solo
-  el primero podría crearla. La variante free funciona si **cada quien usa su
-  workspace personal gratuito** de Render (ahí `setup-attendee` ya no es
-  necesario, aunque no estorba).
-- La Postgres free **expira a los 30 días**; el web service free **se duerme
-  tras 15 min** sin tráfico (el primer request tarda ~1 min en despertarlo).
-- **Sin base de datos también funciona**: borra el bloque `databases:` y el
-  envVar `DATABASE_URL` del `render.yaml` y cambia los planes a `free`. El
-  RAG vive en memoria (la ingesta corre al arrancar); pierdes persistencia de
-  tickets entre reinicios — aceptable para el workshop.
+Para que el RAG persista entre reinicios y la query del Ejercicio 2 corra en
+pgvector de verdad, agrega una base al `render.yaml` y la variable
+`DATABASE_URL` al servicio:
+
+```yaml
+projects:
+- name: rag-agent-workshop
+  environments:
+  - name: production
+    databases:
+    - name: support-agent-db
+      plan: free          # o basic-256mb (de pago)
+      region: oregon
+      postgresMajorVersion: '18'
+    services:
+    - type: web
+      name: support-agent
+      # ... igual que ahora ...
+      envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: support-agent-db
+          property: connectionString
+      # ... resto igual ...
+```
+
+Al arrancar, la app crea el schema (`CREATE EXTENSION vector`, tablas
+`documents`, `chunks`, `orders`, `tickets`) y la ingesta pasa a ser
+idempotente entre deploys: solo re-embebe los archivos que cambiaron.
+
+Ojo con el free tier: **solo puede haber una Postgres free por workspace**
+y expira a los 30 días. En el workspace compartido del workshop no sirve
+(sería una para todos); en tu workspace personal sí. Con plan de pago no hay
+límite. La Action `setup-attendee` también prefija la base si la agregas.
 
 ## Troubleshooting
 
 | Síntoma | Fix |
 | --- | --- |
 | El deploy falla en build | Mira los logs: casi siempre es no haber corrido la Action `setup-attendee` (colisión de nombres) o un `render.yaml` editado a mano |
+| Mi URL tarda o da timeout | El servicio free estaba dormido: espera ~1 min y recarga. Después responde normal |
 | Gemini devuelve 429 (rate limit) | Agrega `AGENT_MODEL=mock` como env var del servicio en Render: todo sigue funcionando en modo mock |
 | El chat responde sin fuentes | Es el estado inicial: Ejercicios 1 y 2 |
-| «La ingesta no corrió» / no encuentra un doc nuevo | La ingesta corre al arrancar; fuerza con `curl -X POST https://<tu-servicio>.onrender.com/api/ingest` |
-| El cliente MCP no conecta | Prueba primero con el Inspector; verifica que la URL termina en `/mcp`; en free tier el primer request despierta al servicio — reintenta |
-| Nombres colisionan en Render | Corre la Action `setup-attendee` en tu fork y vuelve a crear el Blueprint |
+| «Creé un ticket y desapareció» | Memoria: se pierde al redeployar o al despertar. Esperado en el workshop |
+| No encuentra un doc nuevo de `kb/` | En Render, el push redeploya y re-ingesta todo. En local, `curl -X POST http://localhost:3000/api/ingest` sin reiniciar |
+| El cliente MCP no conecta | Prueba primero con el Inspector; verifica que la URL termina en `/mcp`; si el servicio dormía, despiértalo desde el navegador y reintenta |
+| Nombres colisionan en Render | Corre la Action `setup-attendee` sobre tu rama y vuelve a crear el Blueprint |
 
 ## Siguiente paso
 
@@ -187,6 +254,7 @@ Este agente usa el patrón **naive**: todo pasa dentro del request HTTP (mira
 el docstring de `src/support_agent/server.py` para saber por qué eso no
 escala). Caminos para seguir:
 
+- Persistir el índice y los tickets: [Postgres + pgvector](#variante-con-postgres--pgvector).
 - Sacar el trabajo del request: colas + workers, o **Render Workflows**.
 - **Retrieval as a tool**: que el modelo decida cuándo buscar en la KB, en
   vez de recuperar siempre.

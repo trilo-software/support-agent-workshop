@@ -27,14 +27,38 @@ def test_namespacea_el_render_yaml_real():
     assert project["name"] == "ana-perez-rag-agent-workshop"
 
     env = project["environments"][0]
-    assert env["databases"][0]["name"] == "ana-perez-support-agent-db"
+    # El workshop corre sin base de datos (free tier: RAG en memoria).
+    assert not env.get("databases")
 
     service = env["services"][0]
     assert service["name"] == "ana-perez-support-agent"
+    assert service["plan"] == "free"
 
-    from_db = next(
-        e["fromDatabase"] for e in service["envVars"] if e.get("fromDatabase")
-    )
+
+def test_namespacea_tambien_bases_y_fromDatabase():
+    """La variante con Postgres del README también debe namespacearse."""
+    data = {
+        "projects": [{
+            "name": "rag-agent-workshop",
+            "environments": [{
+                "name": "production",
+                "databases": [{"name": "support-agent-db", "plan": "free"}],
+                "services": [{
+                    "type": "web",
+                    "name": "support-agent",
+                    "envVars": [
+                        {"key": "DATABASE_URL",
+                         "fromDatabase": {"name": "support-agent-db",
+                                          "property": "connectionString"}},
+                    ],
+                }],
+            }],
+        }]
+    }
+    result = setup_attendee.namespace_blueprint(data, "Ana-Perez")
+    env = result["projects"][0]["environments"][0]
+    assert env["databases"][0]["name"] == "ana-perez-support-agent-db"
+    from_db = env["services"][0]["envVars"][0]["fromDatabase"]
     assert from_db["name"] == "ana-perez-support-agent-db"
 
 

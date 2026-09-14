@@ -1,28 +1,30 @@
+# Blueprint del workshop: UN web service en plan free, sin base de datos.
+#
+# - El RAG vive en memoria: la ingesta de kb/*.md corre al arrancar (y cada vez
+#   que el free tier despierta). Los pedidos de semilla y los tickets viven en
+#   el proceso y se pierden al reiniciar: aceptable para el workshop.
+# - Free tier: el servicio se duerme tras 15 min sin tráfico y tarda ~1 min en
+#   despertar. Ver scripts/keep_alive.py.
+# - Variante con Postgres + pgvector (opcional, para después): README.
 projects:
 - name: rag-agent-workshop
   environments:
   - name: production
-    databases:
-    - name: support-agent-db
-      plan: basic-256mb
-      region: oregon
-      postgresMajorVersion: '18'
     services:
     - type: web
       name: support-agent
       runtime: python
       region: oregon
-      plan: starter
+      plan: free
       buildCommand: pip install uv && uv sync --frozen --no-dev
       startCommand: uv run python -m support_agent.server
       healthCheckPath: /healthz
       autoDeploy: true
       envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: support-agent-db
-          property: connectionString
       - key: PYTHON_VERSION
         value: '3.12'
+      # La key de Gemini la pone el facilitador: al crear el Blueprint, Render
+      # pide el valor (sync: false). Alternativa sin pegar nada: un env group
+      # compartido del workspace (ver guía del facilitador).
       - key: GEMINI_API_KEY
         sync: false
