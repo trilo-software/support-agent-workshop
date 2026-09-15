@@ -24,7 +24,7 @@ CHUNK_OVERLAP = 100
 # Con TOP_K = 0 el agente vuela a ciegas: no recupera NINGÚN chunk
 # de la base de conocimiento. Sube el valor (4 funciona bien).
 # ─────────────────────────────────────────────────────────────────────
-TOP_K = 0
+TOP_K = 4
 
 # ────────────────────────── EJERCICIO 2 (b) ──────────────────────────
 # A esta query le falta lo más importante: ordenar por similitud.
@@ -37,7 +37,7 @@ TOP_K = 0
 # ─────────────────────────────────────────────────────────────────────
 RETRIEVE_SQL = """
     SELECT c.content, d.title, d.source,
-           1 - (c.embedding <=> $1::vector) AS score
+           1 - (ORDER BY c.embedding <=> $1::vector) AS score
     FROM chunks c JOIN documents d ON d.id = c.document_id
     LIMIT $2;
 """
