@@ -46,10 +46,12 @@ correría ahí, y el backend en memoria la imita. Cómo encenderlo: ver
 - Cuenta de GitHub con acceso de escritura a este repo (te llegó una
   invitación como colaborador).
 - Cuenta en el workspace de Render de Esteban (te llegó una invitación).
-- Key de Gemini: no necesitas una propia, ya está en el workspace (para
-  correr en local con Gemini real sí te sirve una en tu `.env`, opcional).
+- Key de Gemini: tu servicio ya la toma del workspace. Para el script del
+  Ejercicio 5 (y para correr en local con Gemini real) la necesitas en tu
+  `.env`: Esteban la comparte el día del workshop.
 - Para correr en local (opcional pero recomendado): Python ≥ 3.12, [`uv`](https://docs.astral.sh/uv/) y git.
-- Para el Ejercicio 5: Node.js ≥ 18 (`npx`) para el MCP Inspector, o Claude Code.
+- Para el Ejercicio 5: Node.js ≥ 18 (`npx`) para el MCP Inspector. Gemini CLI
+  y Claude Code son opcionales.
 
 ## Paso 0 — Tu rama + Action `setup-attendee`
 
@@ -131,7 +133,8 @@ uv run pytest -m ejercicio   # rojos al inicio → verdes al completar
 ## Conecta tu servicio por MCP
 
 Tu servicio expone un servidor MCP en `/mcp` (transporte HTTP streamable).
-Tres formas de conectarte (con el Ejercicio 5 resuelto):
+Con el Ejercicio 5 resuelto, tres formas de consumirlo, de la más segura a
+la más vistosa:
 
 **1. MCP Inspector** (sin cuenta, siempre funciona):
 
@@ -142,19 +145,37 @@ npx @modelcontextprotocol/inspector
 Conecta a `https://<tu-servicio>.onrender.com/mcp` (transporte *Streamable
 HTTP*), lista los tools e invoca `buscar_kb` a mano.
 
-**2. Claude Code** (el wow):
+**2. Gemini por API** (el wow, con la misma key del workshop): la API de
+Gemini se conecta sola a tu servidor MCP y decide cuándo llamar tus tools.
+Necesitas `GEMINI_API_KEY` en tu `.env`.
 
 ```bash
-claude mcp add --transport http cafe-pura-vida https://<tu-servicio>.onrender.com/mcp
+uv run python scripts/preguntar_por_mcp.py https://<tu-servicio>.onrender.com/mcp "¿cuánto tarda el envío a Cartago?"
 ```
 
-Y pregúntale a Claude: *«¿cuánto tarda un envío de Café Pura Vida a
-Cartago?»* — Claude llamará a `buscar_kb` de TU servicio y responderá con TU
-base de conocimiento.
+Verás qué tool llamó Gemini, qué respondió TU servidor y la respuesta final.
+Solo funciona contra la URL pública: quien se conecta es el backend de
+Gemini, no tu máquina.
 
-**3. Claude Desktop**: Settings → Connectors → Add custom connector, con la
-URL `https://<tu-servicio>.onrender.com/mcp` (requiere un plan que soporte
-conectores remotos).
+**3. Un agente en tu terminal** (opcional):
+
+- **Gemini CLI**, gratis con una cuenta de Google (Node ≥ 20):
+
+  ```bash
+  npx @google/gemini-cli mcp add -t http cafe_pura_vida https://<tu-servicio>.onrender.com/mcp
+  npx @google/gemini-cli
+  ```
+
+  y pregúntale: *«¿cuánto tarda un envío de Café Pura Vida a Cartago?»*.
+- **Claude Code** (requiere suscripción de Claude o API key de Anthropic):
+
+  ```bash
+  claude mcp add --transport http cafe-pura-vida https://<tu-servicio>.onrender.com/mcp
+  ```
+
+- **Claude Desktop**: Settings → Connectors → Add custom connector, con la
+  URL `https://<tu-servicio>.onrender.com/mcp` (plan de pago con conectores
+  remotos).
 
 > ⚠ El endpoint `/mcp` va **sin autenticación** en este workshop: es de solo
 > lectura sobre datos ficticios. En producción se protegería con OAuth o un

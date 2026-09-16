@@ -20,18 +20,23 @@ def test_normalize_username():
 
 
 def test_namespacea_el_render_yaml_real():
+    # Se compara contra los nombres que YA tiene el archivo (no contra
+    # literales): en la rama de un asistente el render.yaml ya viene
+    # prefijado por la Action, y la suite debe seguir verde.
     data = yaml.safe_load(RENDER_YAML.read_text(encoding="utf-8"))
+    nombre_proyecto = data["projects"][0]["name"]
+    nombre_servicio = data["projects"][0]["environments"][0]["services"][0]["name"]
     result = setup_attendee.namespace_blueprint(copy.deepcopy(data), "Ana-Perez")
 
     project = result["projects"][0]
-    assert project["name"] == "ana-perez-rag-agent-workshop"
+    assert project["name"] == f"ana-perez-{nombre_proyecto}"
 
     env = project["environments"][0]
     # El workshop corre sin base de datos (free tier: RAG en memoria).
     assert not env.get("databases")
 
     service = env["services"][0]
-    assert service["name"] == "ana-perez-support-agent"
+    assert service["name"] == f"ana-perez-{nombre_servicio}"
     assert service["plan"] == "free"
 
 
