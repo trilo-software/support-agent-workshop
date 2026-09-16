@@ -169,19 +169,22 @@ async def _chat_gemini(messages: list[dict], tools: dict[str, Tool]) -> ModelRep
     )
     contents = _to_gemini_contents(messages)
 
-    for attempt in (1, 2):
+    for attempt in (1, 2, 3):
         try:
             response = await client.aio.models.generate_content(
                 model=config.gemini_model(), contents=contents, config=gen_config
             )
             break
-        except errors.ClientError as exc:
+        except errors.APIError as exc:
             # 429: límite de tasa de Gemini (frecuente con una key compartida
-            # entre muchos asistentes). Un retry con backoff y, si persiste,
-            # error claro. Escape para el workshop: AGENT_MODEL=mock.
-            if getattr(exc, "code", None) == 429 and attempt == 1:
-                logger.warning("Gemini devolvió 429; reintentando en 2 s…")
-                await asyncio.sleep(2)
+            # entre muchos asistentes). 503: «modelo con alta demanda»,
+            # transitorio. Dos reintentos con backoff y, si persiste, error
+            # claro. Escape para el workshop: AGENT_MODEL=mock.
+            code = getattr(exc, "code", None)
+            if code in (429, 503) and attempt < 3:
+                wait = 2 * attempt
+                logger.warning("Gemini devolvió %s; reintentando en %d s…", code, wait)
+                await asyncio.sleep(wait)
                 continue
             raise
 

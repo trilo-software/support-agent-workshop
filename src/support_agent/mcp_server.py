@@ -15,6 +15,7 @@ token (el SDK de MCP soporta ambos).
 from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 from .rag import retrieve
 from .tools import check_order_status as check_order_status_tool
@@ -22,7 +23,18 @@ from .tools import escalate_to_human as escalate_to_human_tool
 
 # stateless_http + json_response: cada request es independiente (no hay
 # sesión que se pierda si Render redeploya o el free tier se duerme).
-mcp = FastMCP("cafe-pura-vida", stateless_http=True, json_response=True)
+#
+# transport_security: el SDK trae protección anti DNS-rebinding pensada para
+# servidores en localhost: rechaza con 421 «Invalid Host header» cualquier
+# Host que no sea localhost. Este servidor es público (Render), así que se
+# desactiva; sin esto, NINGÚN cliente MCP puede conectarse a la URL pública
+# aunque en local todo funcione.
+mcp = FastMCP(
+    "cafe-pura-vida",
+    stateless_http=True,
+    json_response=True,
+    transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False),
+)
 
 # La app montada en /mcp debe servir en su raíz (si no, quedaría /mcp/mcp).
 mcp.settings.streamable_http_path = "/"
@@ -62,7 +74,7 @@ async def escalate_to_human(summary: str) -> dict:
 # Fíjate cómo check_order_status (aquí arriba) envuelve su handler:
 # es el mismo patrón. La descripción del tool importa: es lo que el
 # cliente MCP lee para decidir cuándo usarlo.
-# Verifica:  pytest -m ejercicio tests/ejercicios/test_ejercicio_5_mcp.py
+# Verifica:  uv run pytest -m ejercicio tests/ejercicios/test_ejercicio_5_mcp.py
 # ─────────────────────────────────────────────────────────────────
 @mcp.tool(
     description=(

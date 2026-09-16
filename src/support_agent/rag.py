@@ -33,7 +33,7 @@ TOP_K = 4
 # a la pregunta. Pista: ORDER BY c.embedding <=> $1::vector
 # (El backend en memoria imita esta query: mientras no tenga ORDER BY,
 # tampoco ordena. Un solo fix arregla ambos.)
-# Verifica:  pytest -m ejercicio tests/ejercicios/test_ejercicio_2_rag.py
+# Verifica:  uv run pytest -m ejercicio tests/ejercicios/test_ejercicio_2_rag.py
 # ─────────────────────────────────────────────────────────────────────
 RETRIEVE_SQL = """
     SELECT c.content, d.title, d.source,

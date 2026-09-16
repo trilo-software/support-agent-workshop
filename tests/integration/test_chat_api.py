@@ -57,3 +57,29 @@ def test_ui_se_sirve_en_raiz(client):
     res = client.get("/")
     assert res.status_code == 200
     assert "Café Pura Vida" in res.text
+
+
+MCP_INITIALIZE = {
+    "jsonrpc": "2.0", "id": 1, "method": "initialize",
+    "params": {"protocolVersion": "2025-06-18", "capabilities": {},
+               "clientInfo": {"name": "test", "version": "0"}},
+}
+MCP_HEADERS = {"Accept": "application/json, text/event-stream"}
+
+
+def test_mcp_acepta_host_publico(client):
+    """El SDK rechaza con 421 cualquier Host que no sea localhost si la
+    protección anti DNS-rebinding está activa; en Render eso bloquea a todos
+    los clientes MCP."""
+    res = client.post(
+        "/mcp/", json=MCP_INITIALIZE,
+        headers={**MCP_HEADERS, "Host": "alguien-support-agent.onrender.com"},
+    )
+    assert res.status_code == 200, res.text
+    assert res.json()["result"]["serverInfo"]["name"] == "cafe-pura-vida"
+
+
+def test_mcp_sin_barra_final_no_redirige(client):
+    res = client.post("/mcp", json=MCP_INITIALIZE, headers=MCP_HEADERS, follow_redirects=False)
+    assert res.status_code == 200, res.text
+    assert "result" in res.json()

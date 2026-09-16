@@ -1,4 +1,4 @@
-# Guía del facilitador
+# Guía de Esteban
 
 Workshop de ~2 h 30, nivel introductorio, en dos actos:
 
@@ -72,7 +72,7 @@ mientras los servicios están despiertos.
 | Síntoma | Fix rápido |
 | --- | --- |
 | «No puedo crear el Blueprint: nombre en uso» | No corrió la Action `setup-attendee`. Actions → setup-attendee → Run workflow → recrear Blueprint |
-| «No veo el workspace del facilitador» | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto |
+| «No veo el workspace de Esteban» | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto |
 | Build falla con `--frozen` | Tocaron `pyproject.toml` sin regenerar `uv.lock`. `git checkout uv.lock pyproject.toml` |
 | Blueprint falla: «non-existent group» | Usas `fromGroup` y el env group no existe en el workspace (o el nombre no coincide). Créalo y reintenta |
 | Deploy verde pero el chat da error 500 | La key del env group `gemini-workshop` es inválida o el grupo no quedó enlazado (Service → Environment). Escape: `AGENT_MODEL=mock` |
@@ -129,9 +129,12 @@ como vectores numpy de 768 dims; con Postgres, en la tabla `chunks`, columna
 ### Demo del agente tonto (0:15)
 
 En tu deploy de referencia SIN resolver: pregunta «¿cuánto tarda el envío a
-Cartago?» → genérico, sin chips de fuentes. Pregunta «¿tienen descuento?» →
-inventa o no sabe. Mensaje: *el deploy está verde; el agente está mal — y
-eso es lo normal en el primer intento de RAG. Hoy lo arreglamos midiendo.*
+Cartago?» → sin chips de fuentes, y con Gemini 3.6 lo típico es que **escale
+todo a un humano** (badge 🔧 `escalate_to_human`, ticket #1, #2, #3…) porque
+no tiene contexto; otras veces responde genérico o inventa. Pregunta
+«¿tienen descuento?» → lo mismo. Mensaje: *el deploy está verde; el agente
+está mal — y eso es lo normal en el primer intento de RAG. Hoy lo arreglamos
+midiendo.*
 
 ### Ejercicio 1 (0:22)
 
