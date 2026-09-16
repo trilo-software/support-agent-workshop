@@ -112,6 +112,24 @@ async def index() -> FileResponse:
 app.mount("/mcp", mcp.streamable_http_app())
 
 
+class _McpSinRedirect:
+    """Starlette responde 307 a `POST /mcp` (sin barra) para mandarlo a
+    `/mcp/`, y no todos los clientes MCP siguen redirects. Reescribe la ruta
+    internamente para que `/mcp` y `/mcp/` sean lo mismo."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http" and scope.get("path") == "/mcp":
+            scope["path"] = "/mcp/"
+            scope["raw_path"] = b"/mcp/"
+        await self.app(scope, receive, send)
+
+
+app.add_middleware(_McpSinRedirect)
+
+
 def main() -> None:
     uvicorn.run(app, host="0.0.0.0", port=config.port())
 
