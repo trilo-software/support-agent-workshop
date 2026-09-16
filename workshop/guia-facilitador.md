@@ -62,8 +62,18 @@ mientras los servicios están despiertos.
       200 en tu referencia (los demás aún no existen).
 - [ ] `npx @modelcontextprotocol/inspector` corre en tu máquina y conecta a
       tu deploy de referencia (`/mcp`).
+- [ ] `uv run python scripts/preguntar_por_mcp.py https://<tu-ref>.onrender.com/mcp`
+      contra tu referencia con el Ejercicio 5 resuelto: Gemini debe llamar
+      `buscar_kb` y responder con la KB. Es el wow de toda la sala.
+- [ ] La key de Gemini lista para compartirla por chat el día del workshop
+      (los asistentes la pegan en su `.env` para el script). Bórrala en AI
+      Studio al terminar y crea otra.
 - [ ] Claude Code instalado y probado con
-      `claude mcp add --transport http cafe-pura-vida https://<tu-ref>.onrender.com/mcp`.
+      `claude mcp add --transport http cafe-pura-vida https://<tu-ref>.onrender.com/mcp`
+      (lo muestras tú desde el proyector: requiere cuenta de pago).
+- [ ] Opcional: Gemini CLI (`npx @google/gemini-cli`) con
+      `mcp add -t http cafe_pura_vida <url>`; gratis con cuenta de Google.
+      Pruébalo antes si lo vas a ofrecer: no está validado en este repo.
 - [ ] Proyector: ten abiertas la UI del chat, `/api/debug/search`, los logs
       de Render y una terminal.
 
@@ -100,7 +110,7 @@ cierre (y apágalo al terminar).
 | 1:05 | 10 min | **Break** | El keep-alive evita que se duerman |
 | 1:15 | 25 min | Ejercicio 4: mini-evals + experimentos de top-k y chunking | «Sin evals, cambias a ciegas» |
 | 1:40 | 8 min | Intro a MCP: qué es, por qué existe, diagrama cliente/servidor | Anclar con lo que YA construyeron |
-| 1:48 | 30 min | Ejercicio 5: completar `buscar_kb` + conectar Inspector/Claude Code | El aha del Acto 2: Claude usa SU RAG |
+| 1:48 | 30 min | Ejercicio 5: completar `buscar_kb` + Inspector + script de Gemini | El aha del Acto 2: otro agente usa SU RAG |
 | 2:18 | 12 min | Cierre: límites del patrón naive, teaser colas/Workflows, se llevan su rama | Exit ticket |
 
 **Flex:** el bonus y el experimento B (chunking) del Ejercicio 4 son
@@ -193,13 +203,16 @@ mejor: su retrieval».
 ### Ejercicio 5 (1:48)
 
 La joya. 4 líneas de código y luego la conexión. Orden recomendado: primero
-TODOS validan con el Inspector (garantizado), luego Claude Code para el wow.
-Antes de que conecten, que cada quien abra su URL en el navegador: así el
-servicio está despierto y la primera llamada MCP no muere por timeout.
-Cuando Claude responda usando `buscar_kb` de su servicio, di la frase:
+TODOS validan con el Inspector (garantizado); luego el wow para toda la sala
+con `scripts/preguntar_por_mcp.py`: la API de Gemini se conecta a SU
+servidor y llama `buscar_kb` sola. Claude Code lo muestras tú desde el
+proyector, porque requiere cuenta de pago. Antes de que conecten, que cada
+quien abra su URL en el navegador: así el servicio está despierto y la
+primera llamada MCP no muere por timeout. Cuando Gemini (o Claude) responda
+usando `buscar_kb` de su servicio, di la frase:
 
 > «El mismo `retrieve()` que arreglaron en el Ejercicio 2 lo acaba de usar
-> Claude — y ustedes no escribieron ningún endpoint para Claude. Eso es lo
+> otro agente — y ustedes no escribieron ningún endpoint para él. Eso es lo
 > que estandariza MCP.»
 
 Caveat para decir en voz alta: `/mcp` va sin auth (datos ficticios, solo

@@ -210,14 +210,28 @@ Fíjate cómo `check_order_status` envuelve su handler: es el mismo patrón.
 uv run pytest -m ejercicio tests/ejercicios/test_ejercicio_5_mcp.py
 ```
 
-**Segunda mitad — conecta un cliente MCP real** a tu servicio desplegado
-(las tres rutas, con comandos, están en el
-[README](../README.md#conecta-tu-servicio-por-mcp)): MCP Inspector,
-Claude Code o Claude Desktop.
+**Segunda mitad — que otro agente use tu servidor.** Con el push hecho y tu
+servicio despierto:
+
+1. **Valida con el MCP Inspector** (`npx @modelcontextprotocol/inspector`):
+   conecta a `https://<tu-servicio>.onrender.com/mcp`, lista los tools y
+   llama `buscar_kb` a mano. Si aquí no sale, nada más va a salir.
+2. **Deja que Gemini lo use solo.** Con `GEMINI_API_KEY` en tu `.env`:
+
+   ```bash
+   uv run python scripts/preguntar_por_mcp.py https://<tu-servicio>.onrender.com/mcp "¿cuánto tarda el envío a Cartago?"
+   ```
+
+   El script le pasa a la API de Gemini la URL de TU servidor MCP; Gemini
+   decide llamar `buscar_kb`, tu servicio le devuelve los chunks y Gemini
+   responde con ellos. Prueba también «¿cómo va el pedido CR-1003?».
+3. Opcional: un agente en tu terminal, Gemini CLI (gratis) o Claude Code
+   (cuenta de pago). Comandos en el
+   [README](../README.md#conecta-tu-servicio-por-mcp).
 
 El aha: el mismo `retrieve()` que arreglaste en el Ejercicio 2 ahora lo
-consume Claude **sin que escribieras un solo endpoint específico para él**.
-Eso es lo que estandariza MCP.
+consume otro agente **sin que escribieras un solo endpoint específico para
+él**. Eso es lo que estandariza MCP.
 
 <details><summary>Pista 1</summary>
 La solución cabe en 4 líneas: un <code>await retrieve(...)</code> y un list
@@ -231,10 +245,11 @@ Cada chunk tiene <code>c.title</code>, <code>c.source</code>,
 </details>
 
 <details><summary>Pista 3 (conexión)</summary>
-Si Claude Code no conecta, valida primero con el Inspector. Si el servicio
-estaba dormido (free tier), ábrelo en el navegador para despertarlo y
-reintenta. Si el redeploy de Render va lento, conéctate al server local:
-<code>http://localhost:3000/mcp</code> también funciona.
+Si el script o un agente no conectan, valida primero con el Inspector. Si el
+servicio estaba dormido (free tier), ábrelo en el navegador para despertarlo
+y reintenta. El script de Gemini necesita la URL pública (no localhost); el
+Inspector y Claude Code sí pueden usar <code>http://localhost:3000/mcp</code>
+si el redeploy de Render va lento.
 </details>
 
 ---
