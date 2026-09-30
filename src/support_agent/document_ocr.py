@@ -11,15 +11,14 @@ import re
 import unicodedata
 from dataclasses import dataclass
 from functools import lru_cache
+from typing import TYPE_CHECKING
 
-import pymupdf
-from PIL import Image, ImageOps, UnidentifiedImageError
-from rapidocr import RapidOCR
+if TYPE_CHECKING:
+    from rapidocr import RapidOCR
 
 MAX_PAGES = 4
 MAX_IMAGE_PIXELS = 20_000_000
 OCR_MAX_EDGE = 1000
-Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
 TRACKING_RE = re.compile(r"\b[A-Z]{2}\s*\d{9}\s*[A-Z]{2}\b", re.IGNORECASE)
 ID_RE = re.compile(r"(?<!\d)(?:\d[\s-]*){9}(?!\d)")
 PHONE_RE = re.compile(r"(?<!\d)\d{8}(?!\d)")
@@ -47,6 +46,8 @@ class OCRPage:
 
 @lru_cache(maxsize=1)
 def _engine() -> RapidOCR:
+    from rapidocr import RapidOCR
+
     return RapidOCR(params={
         "Global.use_cls": False,  # Los cuatro documentos se reciben orientados.
         "Global.log_level": "warning",
@@ -61,6 +62,9 @@ def _norm(value: str) -> str:
 
 
 def _read_image(data: bytes, *, max_edge: int = OCR_MAX_EDGE) -> OCRPage:
+    from PIL import Image, ImageOps, UnidentifiedImageError
+
+    Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
     try:
         with Image.open(io.BytesIO(data)) as image:
             if image.width * image.height > MAX_IMAGE_PIXELS:
@@ -87,6 +91,8 @@ def _read_image(data: bytes, *, max_edge: int = OCR_MAX_EDGE) -> OCRPage:
 def read_document(data: bytes, kind: str) -> list[OCRPage]:
     """Lee un PDF escaneado o una imagen sin escribir copias en disco."""
     if kind == "pdf":
+        import pymupdf
+
         try:
             document = pymupdf.open(stream=data, filetype="pdf")
             if document.needs_pass or not 1 <= len(document) <= MAX_PAGES:
