@@ -40,3 +40,9 @@
 
 - pregunta: "¿Tienen descuento para la primera compra?"
   fuente_esperada: kb/promociones.md
+
+- pregunta: "¿Cómo funciona el programa de referidos?"
+  fuente_esperada: kb/promociones.md
+
+- pregunta: "¿Qué molienda me recomiendan para prensa francesa?"
+  fuente_esperada: kb/productos.md

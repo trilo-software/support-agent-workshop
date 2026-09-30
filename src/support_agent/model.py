@@ -111,7 +111,16 @@ def _chat_mock(messages: list[dict], tools: dict[str, Tool]) -> ModelReply:
         return ModelReply(tool_calls=[
             ToolCall(name="calcular_envio", args={"canton": envio.group(1).strip(), "monto_pedido": monto_int})
         ])
-    if ("hablar con humano" in normalized or "queja" in normalized) and "escalate_to_human" in tools:
+    pide_humano = any(
+        frase in normalized
+        for frase in (
+            "hablar con humano",
+            "hablar con una persona",
+            "hablar con un agente",
+            "agente humano",
+        )
+    )
+    if pide_humano and "escalate_to_human" in tools:
         return ModelReply(tool_calls=[
             ToolCall(name="escalate_to_human", args={"summary": user_text[:200]})
         ])

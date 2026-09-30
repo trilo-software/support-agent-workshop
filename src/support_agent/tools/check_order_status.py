@@ -25,7 +25,6 @@ async def handler(order_number: str) -> dict:
         }
     return {
         "order_number": pedido["order_number"],
-        "customer": pedido["customer"],
         "status": pedido["status"],
         "eta": pedido["eta"],
         "items": pedido["items"],

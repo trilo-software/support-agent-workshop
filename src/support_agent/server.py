@@ -63,6 +63,11 @@ async def api_chat(body: dict):
     if not message:
         return JSONResponse(status_code=400, content={"error": "falta el campo 'message'"})
     history = body.get("history") or []
+    if not isinstance(history, list):
+        return JSONResponse(
+            status_code=400,
+            content={"error": "el campo 'history' debe ser una lista"},
+        )
     try:
         result = await run_agent(message, history)
     except Exception:

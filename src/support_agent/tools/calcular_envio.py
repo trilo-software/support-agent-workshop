@@ -58,7 +58,31 @@ def _normalizar(texto: str) -> str:
 # zonas existen (el modelo usa ese texto para responderle al cliente).
 # ─────────────────────────────────────────────────────────────────────
 async def handler(canton: str, monto_pedido: int) -> dict:
-    return {"error": "TODO(ejercicio 5): implementa calcular_envio"}
+    if monto_pedido < 0:
+        return {"error": "El monto del pedido no puede ser negativo."}
+
+    zona = ZONAS.get(_normalizar(canton))
+    if zona is None:
+        return {
+            "error": (
+                f"No conozco el cantón {canton!r}. Zonas de envío: GAM "
+                "(San José, Heredia, Alajuela centro y Cartago centro), "
+                "Regional (resto de Alajuela y Cartago, Grecia, San Ramón, "
+                "Turrialba y Puriscal) y Extendida (Limón, Puntarenas, "
+                "Guanacaste, Zona Sur y Zona Norte). Pregunta al cliente por "
+                "su cantón."
+            )
+        }
+
+    tarifa = TARIFAS[zona]
+    gratis = monto_pedido > ENVIO_GRATIS_DESDE
+    return {
+        "canton": canton,
+        "zona": zona,
+        "costo": 0 if gratis else tarifa["costo"],
+        "envio_gratis": gratis,
+        "dias_habiles": tarifa["dias_habiles"],
+    }
 
 
 # ────────────────────────── EJERCICIO 5 (b) ──────────────────────────
@@ -71,7 +95,26 @@ async def handler(canton: str, monto_pedido: int) -> dict:
 # ─────────────────────────────────────────────────────────────────────
 tool = Tool(
     name="calcular_envio",
-    description="TODO",
-    parameters={"type": "object", "properties": {}},
+    description=(
+        "Cotiza el envío de un pedido de Café Pura Vida a partir del cantón "
+        "de entrega y el monto en colones. Devuelve la zona, el costo (o si "
+        "es gratis) y los días hábiles. Úsalo cuando el cliente pregunte "
+        "cuánto cuesta o cuánto tarda un envío a un lugar concreto."
+    ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "canton": {
+                "type": "string",
+                "description": "Cantón o lugar de entrega, por ejemplo Heredia o Limón",
+            },
+            "monto_pedido": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Monto del pedido en colones, sin puntos ni símbolos",
+            },
+        },
+        "required": ["canton", "monto_pedido"],
+    },
     handler=handler,
 )

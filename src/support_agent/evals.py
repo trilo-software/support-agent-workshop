@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import sys
 
 import yaml
 
@@ -88,6 +89,8 @@ def print_report(report: dict) -> None:
 
 
 async def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="Mini-evals de retrieval")
     parser.add_argument(
         "--top-k", type=int, default=None,
