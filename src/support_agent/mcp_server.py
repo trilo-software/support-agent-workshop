@@ -84,4 +84,13 @@ async def escalate_to_human(summary: str) -> dict:
     )
 )
 async def buscar_kb(pregunta: str, top_k: int = 4) -> list[dict]:
-    return []  # TODO
+    chunks = await retrieve(pregunta, top_k=top_k)
+    return [
+        {
+            "titulo": c.title,
+            "fuente": c.source,
+            "score": round(c.score, 3),
+            "contenido": c.content,
+        }
+        for c in chunks
+    ]
