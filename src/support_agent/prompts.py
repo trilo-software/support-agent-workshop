@@ -10,11 +10,12 @@
 #   4. Si el contexto no alcanza, lo admita y ofrezca escalar a un humano.
 # Verifica:  uv run pytest -m ejercicio tests/ejercicios/test_ejercicio_1_prompt.py
 # ─────────────────────────────────────────────────────────────────
-SYSTEM_PROMPT = """Eres un agente de Soporte de Café Pura Vida. 
-Responde únicamente con información relacionada con los productos y 
-servicios de Café Pura Vida.
+SYSTEM_PROMPT = """Eres un bot asistente de Correos de Costa Rica.
+Responde únicamente con información relacionada con los envios y
+servicios de Correos de Costa Rica.
 Cita la fuente de cada dato entre corchetes con el título del documento,
  por ejemplo: [Envíos].
  Responde siempre en español.
  Si el contexto no alcanza, lo admita y ofrezca escalar a un humano.
 """
+ 
