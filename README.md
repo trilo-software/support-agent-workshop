@@ -186,6 +186,60 @@ Gemini, no tu máquina.
 > fallar por timeout: abre tu URL en el navegador para despertarlo y
 > reintenta.
 
+## Piloto interno de validación documental
+
+La página del chat incluye **Piloto interno · validar documentos**. Recibe un
+formulario de autorización en PDF, fotos del frente y reverso de la cédula, y
+una factura en PDF/JPG/PNG. El formulario debe tener dos páginas y cada adjunto
+puede pesar hasta 8 MB y el expediente completo hasta 22 MB. Es un ensayo local; los documentos aportados como
+ejemplo no se guardan en este repositorio.
+
+1. Ejecuta `uv sync`. En `.env`, configura `DOCUMENT_PILOT_KEY` con una clave
+   aleatoria de al menos 16 caracteres. Sin esa variable, las rutas del piloto
+   responden 503.
+2. Ejecuta `uv run python -m support_agent.server` y abre
+   `http://localhost:3000`. Expande el panel del piloto, escribe la clave y
+   selecciona los cuatro archivos en su casilla correspondiente.
+3. Pulsa **Validar adjuntos**. El resultado indica `cumple`, `no_cumple` o
+   `requiere_agente`, con cada campo marcado como `coincide`, `diferente`,
+   `faltante` o `no_verificable`.
+4. Si algo no puede comprobarse automáticamente, se crea un ticket con el tool
+   existente `escalate_to_human`. **Ver revisiones pendientes** permite
+   descargar los originales para revisión o eliminarlos.
+
+La extracción usa OCR local en el servidor y el tool interno
+`validar_documentos`. Los documentos y los valores personales extraídos no
+entran en Gemini, el historial del chat, la base de conocimiento ni MCP. El
+reporte y el ticket contienen solo estados y códigos de hallazgo. Los archivos
+de hasta tres casos remitidos quedan en RAM (máximo 24 MB en total) por una hora o hasta que se reinicie
+el proceso; no hay persistencia ni un proceso de atención humana automático.
+La clave compartida protege `/api/documents/*`, pero este esquema y la memoria
+temporal son suficientes solo para el ensayo interno. Evita poner datos reales
+en el chat normal o en servicios externos; en particular, no los envíes a una
+API de Gemini gratuita.
+
+La comparación de nombres es estricta: se ignoran tildes, mayúsculas y espacios,
+pero **se exige el nombre completo**. Si la factura está a otro nombre, el
+resultado es `diferente`; si un campo obligatorio del formulario queda vacío,
+es `faltante` y no cumple. Los campos que el OCR no encuentra también se marcan
+`faltante` y se remiten a un agente, porque pueden estar vacíos o ser ilegibles.
+Si una imagen no se lee o la factura no identifica los artículos, se remite a
+un agente. La detección automática de firmas y casillas depende de
+la calidad de la foto; el sistema no verifica la autenticidad de la cédula ni
+la equivalencia semántica de descripciones distintas.
+
+Este piloto no modifica el endpoint normal `/api/chat`, el RAG ni los tools de
+MCP. Para el despliegue de ensayo, `render.yaml` genera
+`DOCUMENT_PILOT_KEY` sin guardar su valor en Git. Si el servicio existente no
+está gestionado por ese Blueprint, añade la variable manualmente en
+**Render → servicio → Environment**. Después de desplegar, consulta la clave
+en esa misma pantalla e introdúcela en el panel del chat; `/healthz` debe
+responder `{"ok":true}` y `/api/documents/reviews` debe responder 401 sin
+la clave y 200 con ella. El servicio gratuito tiene 512 MB de RAM: el OCR de
+fotos grandes puede agotar esa memoria; usa imágenes nítidas y revisa
+**Metrics** y los logs durante la demo. Los casos pendientes desaparecen si el
+servicio gratuito se duerme o se reinicia.
+
 ## Correr en local
 
 ```bash
@@ -218,6 +272,7 @@ uv run uvicorn support_agent.server:app --reload --port 3000
 | `GEMINI_EMBED_MODEL` | No | Default `gemini-embedding-001` (768 dims) |
 | `DATABASE_URL` | No | Sin ella, backend en memoria (así corre el workshop). Con ella, Postgres + pgvector |
 | `PORT` | No | Default `3000` (en Render la inyecta la plataforma) |
+| `DOCUMENT_PILOT_KEY` | Para usar el piloto | Clave de al menos 16 caracteres; sin ella `/api/documents/*` está deshabilitado |
 
 En local, la app carga `<raíz>/.env` si existe (sin pisar variables ya
 exportadas).

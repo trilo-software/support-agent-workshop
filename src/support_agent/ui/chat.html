@@ -106,6 +106,16 @@
   }
   button:disabled { opacity: .5; cursor: default; }
   .error { color: #b3372f; }
+  details.pilot { max-width: 760px; width: 100%; margin: 0 auto; padding: 8px 20px; background: #fffaf4; border-top: 1px solid #e4dbd0; }
+  details.pilot summary { cursor: pointer; font-weight: 600; }
+  .pilot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
+  .pilot-grid label { font-size: 13px; }
+  .pilot-grid input { display: block; width: 100%; margin-top: 4px; font-size: 12px; padding: 8px; }
+  .pilot-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pilot-actions button { padding: 8px 12px; font-size: 13px; }
+  #reviews { max-height: 120px; overflow-y: auto; font-size: 13px; }
+  #reviews button { margin: 4px; }
+  @media (max-width: 560px) { .pilot-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -119,6 +129,24 @@
 
 <div id="chat"></div>
 
+<details class="pilot" id="pilot">
+  <summary>Piloto interno · validar documentos</summary>
+  <p>Adjunta el formulario completo, ambas caras de la cédula y la factura. Los datos se procesan localmente en el servidor; los casos remitidos a un agente permanecen en memoria hasta una hora.</p>
+  <div class="pilot-grid">
+    <label>Clave del piloto<input id="pilot-key" type="password" autocomplete="off" minlength="16" placeholder="Clave configurada en el servidor"></label>
+    <label>Formulario PDF<input id="formulario" type="file" accept="application/pdf,.pdf"></label>
+    <label>Cédula frente<input id="cedula_frente" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png"></label>
+    <label>Cédula reverso<input id="cedula_reverso" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png"></label>
+    <label>Factura<input id="factura" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png"></label>
+  </div>
+  <div class="pilot-actions">
+    <button id="validate" type="button">Validar adjuntos</button>
+    <button id="load-reviews" type="button">Ver revisiones pendientes</button>
+    <span id="pilot-status" role="status"></span>
+  </div>
+  <div id="reviews"></div>
+</details>
+
 <form id="form">
   <input id="input" autocomplete="off" placeholder="Escribe tu pregunta… p. ej. ¿cuánto tarda el envío a Limón?" />
   <button id="send" type="submit">Enviar</button>
@@ -129,6 +157,10 @@
   const form = document.getElementById("form");
   const input = document.getElementById("input");
   const send = document.getElementById("send");
+  const validate = document.getElementById("validate");
+  const pilotStatus = document.getElementById("pilot-status");
+  const reviews = document.getElementById("reviews");
+  const fileRoles = ["formulario", "cedula_frente", "cedula_reverso", "factura"];
 
   // El historial vive en el navegador y viaja completo en cada request:
   // el servidor no guarda estado de sesión.
@@ -165,6 +197,104 @@
   }
 
   addMessage("bot", "¡Pura vida! 👋 Soy el asistente de Café Pura Vida. ¿En qué te ayudo?");
+
+  function pilotKey() {
+    const key = document.getElementById("pilot-key").value;
+    if (key.length < 16) throw new Error("Escribe la clave del piloto (mínimo 16 caracteres).");
+    return key;
+  }
+
+  async function pilotFetch(url, options = {}) {
+    const response = await fetch(url, {
+      ...options,
+      headers: { ...(options.headers || {}), "X-Pilot-Key": pilotKey() },
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || `Error ${response.status}`);
+    }
+    return response;
+  }
+
+  validate.addEventListener("click", async () => {
+    const body = new FormData();
+    for (const role of fileRoles) {
+      const file = document.getElementById(role).files[0];
+      if (!file) { pilotStatus.textContent = "Faltan adjuntos: se requieren los cuatro documentos."; return; }
+      body.append(role, file);
+    }
+    body.append("message", "Validar expediente adjunto");
+    validate.disabled = true;
+    pilotStatus.textContent = "Analizando documentos…";
+    try {
+      const response = await pilotFetch("/api/documents/validate", { method: "POST", body });
+      const data = await response.json();
+      addMessage("user", "Validar expediente adjunto");
+      addMessage("bot", data.reply);
+      addMeta(data.sources, data.tool_calls);
+      pilotStatus.textContent = `Resultado: ${data.validation.resultado}`;
+    } catch (error) {
+      pilotStatus.textContent = error.message;
+    } finally {
+      validate.disabled = false;
+    }
+  });
+
+  document.getElementById("load-reviews").addEventListener("click", async () => {
+    reviews.textContent = "Cargando…";
+    try {
+      const response = await pilotFetch("/api/documents/reviews");
+      const data = await response.json();
+      reviews.replaceChildren();
+      if (!data.revisiones.length) { reviews.textContent = "No hay revisiones pendientes."; return; }
+      for (const item of data.revisiones) {
+        const row = document.createElement("div");
+        row.append(`Ticket #${item.ticket_id} · ${item.resultado} `);
+        const open = document.createElement("button");
+        open.type = "button";
+        open.textContent = "Mostrar adjuntos";
+        open.addEventListener("click", async () => {
+          try {
+            const detail = await (await pilotFetch(`/api/documents/reviews/${item.ticket_id}`)).json();
+            row.querySelectorAll(".attachment").forEach(button => button.remove());
+            for (const role of detail.adjuntos) {
+              const download = document.createElement("button");
+              download.type = "button";
+              download.className = "attachment";
+              download.textContent = role.replaceAll("_", " ");
+              download.addEventListener("click", async () => {
+                try {
+                  const file = await pilotFetch(`/api/documents/reviews/${item.ticket_id}/files/${role}`);
+                  const blob = await file.blob();
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.download = `${role}.${blob.type === "application/pdf" ? "pdf" : blob.type === "image/png" ? "png" : "jpg"}`;
+                  document.body.appendChild(link);
+                  link.click();
+                  link.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 60000);
+                } catch (error) { pilotStatus.textContent = error.message; }
+              });
+              row.appendChild(download);
+            }
+          } catch (error) { pilotStatus.textContent = error.message; }
+        });
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Eliminar";
+        remove.addEventListener("click", async () => {
+          try {
+            await pilotFetch(`/api/documents/reviews/${item.ticket_id}`, { method: "DELETE" });
+            row.remove();
+          } catch (error) { pilotStatus.textContent = error.message; }
+        });
+        row.append(open, remove);
+        reviews.appendChild(row);
+      }
+    } catch (error) { reviews.textContent = error.message; }
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();

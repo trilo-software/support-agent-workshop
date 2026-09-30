@@ -54,6 +54,11 @@ def port() -> int:
     return int(os.environ.get("PORT", "3000"))
 
 
+def document_pilot_key() -> str:
+    """Clave compartida del piloto interno. Sin ella la carga está cerrada."""
+    return os.environ.get("DOCUMENT_PILOT_KEY", "").strip()
+
+
 def use_mock() -> bool:
     """Modo mock determinista: sin API key, o forzado con AGENT_MODEL=mock.
 

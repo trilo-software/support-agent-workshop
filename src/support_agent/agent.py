@@ -17,9 +17,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from .model import chat
+from .document_validation import formatear_informe
 from .prompts import SYSTEM_PROMPT
 from .rag import RetrievedChunk, retrieve
-from .tools import TOOLS
+from .tools import DOCUMENT_TOOLS, TOOLS
 
 MAX_TURNS = 3
 
@@ -29,6 +30,7 @@ class AgentResult:
     reply: str
     sources: list[dict] = field(default_factory=list)
     tool_calls_made: list[str] = field(default_factory=list)
+    validation: dict | None = None
 
 
 def _format_context(chunks: list[RetrievedChunk]) -> str:
@@ -37,7 +39,30 @@ def _format_context(chunks: list[RetrievedChunk]) -> str:
     return "\n\n".join(f"[{c.title}] ({c.source})\n{c.content}" for c in chunks)
 
 
-async def run_agent(message: str, history: list[dict] | None = None) -> AgentResult:
+async def run_agent(
+    message: str, history: list[dict] | None = None, *, document_data: dict | None = None
+) -> AgentResult:
+    if document_data is not None:
+        # No se envían los datos OCR ni las imágenes a Gemini, al historial
+        # normal del chat, a la KB o al servidor MCP.
+        report = await DOCUMENT_TOOLS["validar_documentos"].handler(datos=document_data)
+        calls = ["validar_documentos"]
+        if report["referir_agente"]:
+            uncertain = ", ".join(
+                item["codigo"] for item in report["verificaciones"]
+                if item["estado"] in {"faltante", "no_verificable"}
+            )
+            ticket = await TOOLS["escalate_to_human"].handler(
+                summary=f"Piloto documental: revisión necesaria ({uncertain}). Sin datos personales."
+            )
+            report["ticket_id"] = ticket["ticket_id"]
+            calls.append("escalate_to_human")
+        return AgentResult(
+            reply=formatear_informe(report),
+            tool_calls_made=calls,
+            validation=report,
+        )
+
     chunks = await retrieve(message)
     sources = [
         {"title": c.title, "source": c.source, "score": round(c.score, 3)}

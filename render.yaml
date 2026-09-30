@@ -23,6 +23,12 @@ projects:
       envVars:
       - key: PYTHON_VERSION
         value: '3.12'
+      # Clave aleatoria para el panel documental interno. Se consulta en el
+      # dashboard de Render; nunca se guarda en Git.
+      - key: DOCUMENT_PILOT_KEY
+        generateValue: true
+      - key: MALLOC_ARENA_MAX
+        value: '2'
       # La key de Gemini viene del env group `gemini-workshop` del workspace
       # (lo administra Esteban: nadie pega nada). Render exige que el
       # grupo exista. Si despliegas en otro workspace sin ese grupo, cámbialo

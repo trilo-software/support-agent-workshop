@@ -13,6 +13,11 @@ dependencies = [
     "asyncpg>=0.30",
     "numpy>=2.0",
     "python-dotenv>=1.2.2",
+    "python-multipart>=0.0.20",
+    "pymupdf>=1.26",
+    "rapidocr>=3.9,<4",
+    "onnxruntime>=1.22",
+    "pillow>=11",
 ]
 
 [tool.uv]
