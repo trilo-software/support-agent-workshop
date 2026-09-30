@@ -17,6 +17,18 @@ def test_top_k_encendido():
     assert rag.TOP_K >= 1, "Parte (a): con TOP_K = 0 el agente no recupera nada."
 
 
+def test_order_by_en_su_lugar():
+    assert "1 - (c.embedding <=> $1::vector) AS score" in rag.RETRIEVE_SQL, (
+        "Parte (b): el SELECT no se toca; el score sigue siendo "
+        "1 - (c.embedding <=> $1::vector) AS score."
+    )
+    assert rag._sql_ordena_por_similitud(), (
+        "Parte (b): el ORDER BY va ENTRE el JOIN y el LIMIT, ascendente: "
+        "ORDER BY c.embedding <=> $1::vector. Dentro del SELECT es SQL "
+        "inválido en Postgres, y con DESC traería los MENOS parecidos."
+    )
+
+
 async def test_retrieve_devuelve_chunks():
     await ingest_kb()
     chunks = await rag.retrieve("¿cuánto tarda el envío a Cartago?")

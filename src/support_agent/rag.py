@@ -8,6 +8,7 @@ Aquí vive el EJERCICIO 2. El flujo completo es:
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 import numpy as np
@@ -31,8 +32,10 @@ TOP_K = 4
 # pgvector te da el operador <=> (distancia coseno: menor = más
 # parecido). Agrega el ORDER BY para traer los chunks MÁS parecidos
 # a la pregunta. Pista: ORDER BY c.embedding <=> $1::vector
-# (El backend en memoria imita esta query: mientras no tenga ORDER BY,
-# tampoco ordena. Un solo fix arregla ambos.)
+# La cláusula va ENTRE el JOIN y el LIMIT (no dentro del SELECT: eso
+# sería SQL inválido en Postgres). El backend en memoria imita esta
+# query: mientras el ORDER BY no esté en su lugar, tampoco ordena.
+# Un solo fix arregla ambos.
 # Verifica:  uv run pytest -m ejercicio tests/ejercicios/test_ejercicio_2_rag.py
 # ─────────────────────────────────────────────────────────────────────
 RETRIEVE_SQL = """
@@ -152,12 +155,25 @@ def rank_chunks(
     return results[:top_k]
 
 
+# Forma correcta de la parte (b): el ORDER BY entre el JOIN y el LIMIT,
+# ascendente (<=> es distancia: menor = más parecido).
+_ORDER_BY_CORRECTO = re.compile(
+    r"JOIN\s+documents\s+d\s+ON\s+d\.id\s*=\s*c\.document_id\s+"
+    r"ORDER\s+BY\s+c\.embedding\s*<=>\s*\$1::vector(?:\s+ASC)?\s+LIMIT",
+    re.IGNORECASE,
+)
+
+
 def _sql_ordena_por_similitud() -> bool:
     """El backend en memoria imita el comportamiento de RETRIEVE_SQL: si la
-    query no tiene ORDER BY, en memoria tampoco ordenamos. Así el bug del
-    Ejercicio 2 (b) se reproduce igual con o sin Postgres, y el mismo fix
-    (agregar el ORDER BY al SQL) arregla los dos backends."""
-    return "order by" in RETRIEVE_SQL.lower()
+    query no ordena por similitud, en memoria tampoco ordenamos. Así el bug
+    del Ejercicio 2 (b) se reproduce igual con o sin Postgres, y el mismo fix
+    (agregar el ORDER BY al SQL) arregla los dos backends.
+
+    Se exige la forma correcta (ORDER BY entre el JOIN y el LIMIT): un ORDER
+    BY escrito dentro del SELECT, o un DESC, sería SQL inválido o incorrecto
+    en Postgres, y en memoria no debe «funcionar» por accidente."""
+    return _ORDER_BY_CORRECTO.search(RETRIEVE_SQL) is not None
 
 
 async def retrieve(question: str, top_k: int | None = None) -> list[RetrievedChunk]:

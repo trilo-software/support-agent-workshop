@@ -173,6 +173,11 @@ vivo con la misma pregunta; señala los chips 📚 con scores.
 CFU: «si `<=>` es distancia, ¿el ORDER BY va ASC o DESC?» (ASC — y el score
 del SELECT es 1−distancia, por eso mayor = mejor).
 
+Pitfall real (pasó en la prueba piloto): escribir el `ORDER BY` **dentro del
+SELECT**, `1 - (ORDER BY c.embedding <=> $1::vector) AS score`. Es SQL
+inválido en Postgres; el backend en memoria ya no lo da por bueno y el test
+lo dice con todas las letras: la cláusula va entre el JOIN y el LIMIT.
+
 ### Ejercicio 3 (0:47)
 
 Mensaje: *alimentar la KB no es tocar código, es git*. Tras el push, el log
