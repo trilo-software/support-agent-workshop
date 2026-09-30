@@ -36,5 +36,6 @@ from . import calcular_envio, check_order_status, escalate_to_human  # noqa: E40
 TOOLS: dict[str, Tool] = {
     escalate_to_human.tool.name: escalate_to_human.tool,
     check_order_status.tool.name: check_order_status.tool,
+    calcular_envio.tool.name: calcular_envio.tool,
     # TODO(ejercicio 5): registra aquí calcular_envio
 }

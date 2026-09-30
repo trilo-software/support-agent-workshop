@@ -58,7 +58,24 @@ def _normalizar(texto: str) -> str:
 # zonas existen (el modelo usa ese texto para responderle al cliente).
 # ─────────────────────────────────────────────────────────────────────
 async def handler(canton: str, monto_pedido: int) -> dict:
-    return {"error": "TODO(ejercicio 5): implementa calcular_envio"}
+    zona = ZONAS.get(_normalizar(canton))
+    if zona is None:
+        return {
+            "error": (
+                f"No reconozco el cantón {canton}. "
+                "Indica un destino de las zonas GAM, Regional o Extendida."
+            )
+        }
+
+    tarifa = TARIFAS[zona]
+    envio_gratis = monto_pedido > ENVIO_GRATIS_DESDE
+    return {
+        "canton": canton,
+        "zona": zona,
+        "costo": 0 if envio_gratis else tarifa["costo"],
+        "envio_gratis": envio_gratis,
+        "dias_habiles": tarifa["dias_habiles"],
+    }
 
 
 # ────────────────────────── EJERCICIO 5 (b) ──────────────────────────
@@ -71,7 +88,25 @@ async def handler(canton: str, monto_pedido: int) -> dict:
 # ─────────────────────────────────────────────────────────────────────
 tool = Tool(
     name="calcular_envio",
-    description="TODO",
-    parameters={"type": "object", "properties": {}},
+    description=(
+        "Cotiza un envío de Café Pura Vida según el cantón de destino y "
+        "el monto del pedido en colones. Úsalo cuando el cliente pregunte "
+        "cuánto cuesta o cuánto tarda un envío. Devuelve zona, costo, "
+        "si el envío es gratis y días hábiles de entrega."
+    ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "canton": {
+                "type": "string",
+                "description": "Cantón o destino del envío, por ejemplo Limón.",
+            },
+            "monto_pedido": {
+                "type": "integer",
+                "description": "Monto total del pedido en colones.",
+            },
+        },
+        "required": ["canton", "monto_pedido"],
+    },
     handler=handler,
 )
