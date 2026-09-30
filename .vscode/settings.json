@@ -1,0 +1,9 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "&": true,
+        "uv": true,
+        "Get-Command": true,
+        "py": true,
+        "where.exe": true
+    }
+}

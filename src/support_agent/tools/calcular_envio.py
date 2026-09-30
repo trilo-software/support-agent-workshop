@@ -49,7 +49,6 @@ def _normalizar(texto: str) -> str:
     )
     return " ".join(sin_tildes.lower().split())
 
-
 # ────────────────────────── EJERCICIO 5 (a) ──────────────────────────
 # Completa el handler. Debe devolver un dict con:
 #   canton, zona, costo (0 si aplica envío gratis), envio_gratis (bool),
@@ -58,9 +57,31 @@ def _normalizar(texto: str) -> str:
 # zonas existen (el modelo usa ese texto para responderle al cliente).
 # ─────────────────────────────────────────────────────────────────────
 async def handler(canton: str, monto_pedido: int) -> dict:
-    return {"error": "TODO(ejercicio 5): implementa calcular_envio"}
-
-
+    canton_normalizado = _normalizar(canton)
+    zona = ZONAS.get(canton_normalizado)
+ 
+    if zona is None:
+        zonas_disponibles = ", ".join(sorted(set(ZONAS.values())))
+        cantones_disponibles = ", ".join(sorted(ZONAS))
+        return {
+            "error": (
+                f"No tengo tarifa para el cantón '{canton}'. "
+                f"Las zonas disponibles son: {zonas_disponibles}. "
+                f"Cantones/lugares conocidos: {cantones_disponibles}."
+            )
+        }
+ 
+    tarifa = TARIFAS[zona]
+    envio_gratis = monto_pedido > ENVIO_GRATIS_DESDE
+ 
+    return {
+        "canton": canton,
+        "zona": zona,
+        "costo": 0 if envio_gratis else tarifa["costo"],
+        "envio_gratis": envio_gratis,
+        "dias_habiles": tarifa["dias_habiles"],
+    }
+ 
 # ────────────────────────── EJERCICIO 5 (b) ──────────────────────────
 # Completa el tool: la descripción (¿cuándo debe usarlo el modelo? ¿qué
 # devuelve?) y el schema de parámetros (canton: string, monto_pedido:
@@ -71,7 +92,32 @@ async def handler(canton: str, monto_pedido: int) -> dict:
 # ─────────────────────────────────────────────────────────────────────
 tool = Tool(
     name="calcular_envio",
-    description="TODO",
-    parameters={"type": "object", "properties": {}},
+    description=(
+        "Calcula la tarifa y el plazo estimado de envío para un pedido de Café Pura Vida. "
+        "Úsalo cuando el cliente pregunte cuánto cuesta el envío, si aplica envío gratis, "
+        "o cuánto tarda la entrega hacia un cantón o zona de Costa Rica. "
+        "Devuelve el cantón consultado, la zona, el costo en colones, si el envío es gratis "
+        "y el plazo en días hábiles."
+    ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "canton": {
+                "type": "string",
+                "description": (
+                    "Cantón, ciudad o lugar de Costa Rica al que se enviará el pedido, "
+                    "por ejemplo Heredia, Limón o Turrialba."
+                ),
+            },
+            "monto_pedido": {
+                "type": "integer",
+                "description": (
+                    "Monto total del pedido en colones costarricenses, sin símbolo de moneda. "
+                    "Se usa para determinar si aplica envío gratis."
+                ),
+            },
+        },
+        "required": ["canton", "monto_pedido"],
+    },
     handler=handler,
 )
