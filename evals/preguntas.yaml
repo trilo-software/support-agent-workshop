@@ -40,3 +40,9 @@
 
 - pregunta: "¿Tienen descuento para la primera compra?"
   fuente_esperada: kb/promociones.md
+
+- pregunta: "¿Tienen café granulado?"
+  fuente_esperada: kb/productos.md
+
+- pregunta: "¿Qué promoción tiene para clientes frecuentes?"
+  fuente_esperada: kb/promociones.md
