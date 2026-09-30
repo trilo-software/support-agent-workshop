@@ -58,7 +58,25 @@ def _normalizar(texto: str) -> str:
 # zonas existen (el modelo usa ese texto para responderle al cliente).
 # ─────────────────────────────────────────────────────────────────────
 async def handler(canton: str, monto_pedido: int) -> dict:
-    return {"error": "TODO(ejercicio 5): implementa calcular_envio"}
+    zona = ZONAS.get(_normalizar(canton))
+    if zona is None:
+        return {
+            "error": (
+                f"No reconozco el cantón {canton!r}. Las zonas disponibles son "
+                "GAM (por ejemplo Heredia), Regional (por ejemplo Turrialba) "
+                "y Extendida (por ejemplo Limón). Confirma el cantón de destino."
+            )
+        }
+
+    tarifa = TARIFAS[zona]
+    envio_gratis = monto_pedido > ENVIO_GRATIS_DESDE
+    return {
+        "canton": canton.strip(),
+        "zona": zona,
+        "costo": 0 if envio_gratis else tarifa["costo"],
+        "envio_gratis": envio_gratis,
+        "dias_habiles": tarifa["dias_habiles"],
+    }
 
 
 # ────────────────────────── EJERCICIO 5 (b) ──────────────────────────
@@ -71,7 +89,26 @@ async def handler(canton: str, monto_pedido: int) -> dict:
 # ─────────────────────────────────────────────────────────────────────
 tool = Tool(
     name="calcular_envio",
-    description="TODO",
-    parameters={"type": "object", "properties": {}},
+    description=(
+        "Calcula el costo del envío en colones y el plazo en días hábiles "
+        "para un cantón y un monto de pedido. Úsala cuando el cliente consulte "
+        "cuánto cuesta o tarda un envío y proporcione ambos datos; si falta "
+        "alguno, solicítalo. Devuelve cantón, zona, costo, si el envío es gratis "
+        "y días hábiles. El envío es gratis para pedidos superiores a ₡25.000."
+    ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "canton": {
+                "type": "string",
+                "description": "Cantón o lugar de destino en Costa Rica, por ejemplo Limón.",
+            },
+            "monto_pedido": {
+                "type": "integer",
+                "description": "Monto del pedido en colones, sin incluir el costo del envío.",
+            },
+        },
+        "required": ["canton", "monto_pedido"],
+    },
     handler=handler,
 )
