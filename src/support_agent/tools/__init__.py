@@ -19,7 +19,7 @@ class Tool:
     handler: Callable[..., Awaitable[dict]]
 
 
-from . import calcular_envio, check_order_status, escalate_to_human,check_shipment_status  # noqa: E402
+from . import calcular_envio, check_order_status, escalate_to_human,check_shipment_status,list_customer_shipments  # noqa: E402
 
 # ────────────────────────── EJERCICIO 4 ──────────────────────────
 # check_order_status ya está implementado (míralo en
@@ -38,4 +38,5 @@ TOOLS: dict[str, Tool] = {
     #check_order_status.tool.name: check_order_status.tool,
     calcular_envio.tool.name: calcular_envio.tool,
     check_shipment_status.tool.name: check_shipment_status.tool,
+    list_customer_shipments.tool.name: list_customer_shipments.tool,
 }

@@ -53,7 +53,7 @@ SEED_CLIENTES: list[tuple[int, str]] = [
     (3, "María Fernández"),
     (4, "Carlos Rodríguez"),
     (5, "Sofía Vargas"),
-    (6, "Diego Solano"),
+    (6, "Mauricio Salazar"),
 ]
 
 SEED_UNIDADES: list[tuple[int, str]] = [
@@ -247,11 +247,14 @@ class MemoryDB:
         return {**envio, "unidad_descripcion": unidad["descripcion"] if unidad else None}
 
     async def get_envios_cliente(self, codigo_cliente: int) -> list[dict]:
-        envios = [
-            {k: v for k, v in e.items() if k != "codigo_cliente"}
-            for e in self.envios.values()
-            if e["codigo_cliente"] == codigo_cliente
-        ]
+        envios = []
+        for e in self.envios.values():
+            if e["codigo_cliente"] != codigo_cliente:
+                continue
+            unidad = self.unidades.get(e["unidad_actual"])
+            envio = {k: v for k, v in e.items() if k != "codigo_cliente"}
+            envio["unidad_descripcion"] = unidad["descripcion"] if unidad else None
+            envios.append(envio)
         return sorted(envios, key=lambda e: e["fecha_creacion"], reverse=True)
 
 
@@ -381,9 +384,12 @@ class PostgresDB:
     async def get_envios_cliente(self, codigo_cliente: int) -> list[dict]:
         pool = await self._get_pool()
         rows = await pool.fetch(
-            """SELECT envio_id, estado, fecha_creacion, fecha_entrega, unidad_actual
-               FROM envios WHERE codigo_cliente = $1
-               ORDER BY fecha_creacion DESC""",
+            """SELECT e.envio_id, e.estado, e.fecha_creacion, e.fecha_entrega,
+                      e.unidad_actual, u.descripcion AS unidad_descripcion
+               FROM envios e
+               LEFT JOIN unidades u ON u.codigo_unidad = e.unidad_actual
+               WHERE e.codigo_cliente = $1
+               ORDER BY e.fecha_creacion DESC""",
             codigo_cliente,
         )
         return [_fechas_a_texto(dict(r)) for r in rows]
