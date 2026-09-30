@@ -8,7 +8,7 @@
   <style>
     :root {
       --cafe: #003057;
-      --crema: #f6efe7;
+      --crema: #ffffff;
       --verde: #2e7d5b;
       --gris: #8a7f76;
       --burbuja-user: #4b2e1e;
@@ -167,7 +167,7 @@
 
 <body>
   <header>
-    <span class="logo" role="img" aria-label="Paquete">📦</span>
+    <img src="logo_ccr_blanco.png" alt="Correos de Costa Rica" class="logo">
     <div>
       <h1>Correos de Costa Rica — Soporte</h1>
       <p>Agente con RAG · pregunta por envíos, planes, pagos, pedidos…</p>
@@ -177,7 +177,8 @@
   <div id="chat"></div>
 
   <form id="form">
-    <input id="input" autocomplete="off" placeholder="Escribe tu pregunta… p. ej. ¿donde está mi envío? Número de contacto?" />
+    <input id="input" autocomplete="off"
+      placeholder="Escribe tu pregunta… p. ej. ¿donde está mi envío? Número de contacto?" />
     <button id="send" type="submit">Enviar</button>
   </form>
 
