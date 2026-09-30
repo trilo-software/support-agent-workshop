@@ -35,7 +35,7 @@ from . import calcular_envio, check_order_status, escalate_to_human,check_shipme
 # ─────────────────────────────────────────────────────────────────
 TOOLS: dict[str, Tool] = {
     escalate_to_human.tool.name: escalate_to_human.tool,
-    check_order_status.tool.name: check_order_status.tool,
+    #check_order_status.tool.name: check_order_status.tool,
     calcular_envio.tool.name: calcular_envio.tool,
     check_shipment_status.tool.name: check_shipment_status.tool,
 }
