@@ -58,7 +58,30 @@ def _normalizar(texto: str) -> str:
 # zonas existen (el modelo usa ese texto para responderle al cliente).
 # ─────────────────────────────────────────────────────────────────────
 async def handler(canton: str, monto_pedido: int) -> dict:
-    return {"error": "TODO(ejercicio 5): implementa calcular_envio"}
+    canton_normalizado = _normalizar(canton)
+
+    if canton_normalizado not in ZONAS:
+        zonas = ", ".join(sorted(set(ZONAS.values())))
+        return {
+            "error": (
+                f"No se encontró cobertura para '{canton}'. "
+                f"Las zonas disponibles son: {zonas}."
+            )
+        }
+
+    zona = ZONAS[canton_normalizado]
+    tarifa = TARIFAS[zona]
+
+    envio_gratis = monto_pedido > ENVIO_GRATIS_DESDE
+    costo = 0 if envio_gratis else tarifa["costo"]
+
+    return {
+        "canton": canton,
+        "zona": zona,
+        "costo": costo,
+        "envio_gratis": envio_gratis,
+        "dias_habiles": tarifa["dias_habiles"],
+    }
 
 
 # ────────────────────────── EJERCICIO 5 (b) ──────────────────────────
@@ -71,7 +94,25 @@ async def handler(canton: str, monto_pedido: int) -> dict:
 # ─────────────────────────────────────────────────────────────────────
 tool = Tool(
     name="calcular_envio",
-    description="TODO",
-    parameters={"type": "object", "properties": {}},
+    description=(
+        "Calcula la zona de envío, el costo y el plazo de entrega "
+        "según el cantón indicado y el monto del pedido. "
+        "Debe usarse cuando el cliente consulta cuánto cuesta un envío, "
+        "si tiene envío gratis o cuánto tarda la entrega."
+    ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "canton": {
+                "type": "string",
+                "description": "Cantón o localidad de destino del pedido."
+            },
+            "monto_pedido": {
+                "type": "integer",
+                "description": "Monto total del pedido en colones."
+            }
+        },
+        "required": ["canton", "monto_pedido"]
+    },
     handler=handler,
 )
