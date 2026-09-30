@@ -79,9 +79,18 @@ async def escalate_to_human(summary: str) -> dict:
 @mcp.tool(
     description=(
         "Busca en la base de conocimiento de Café Pura Vida (envíos, "
-        "suscripciones, facturación, productos, devoluciones) y devuelve los "
+        "suscripciones, facturación, productos, devoluciones, promociones) y devuelve los "
         "fragmentos más relevantes para una pregunta, con fuente y score."
     )
 )
 async def buscar_kb(pregunta: str, top_k: int = 4) -> list[dict]:
-    return []  # TODO
+    chunks = await retrieve(pregunta, top_k)
+    return [
+        {
+            "titulo": c.title,
+            "fuente": c.source,
+            "score": round(c.score, 3),
+            "contenido": c.content,
+        }
+        for c in chunks
+    ]

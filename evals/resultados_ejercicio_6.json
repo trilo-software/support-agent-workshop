@@ -1,0 +1,749 @@
+{
+  "modo": "mock; base en memoria reiniciada en cada experimento",
+  "baseline_original": {
+    "total": 11,
+    "hits": 11,
+    "hits_at_1": 10,
+    "top_k": 4,
+    "chunk_size": 800,
+    "chunk_overlap": 100
+  },
+  "experimentos": [
+    {
+      "top_k": 4,
+      "total": 13,
+      "hits": 13,
+      "hits_at_1": 12,
+      "rows": [
+        {
+          "pregunta": "¿Cuánto cuesta el envío a Limón?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.371
+        },
+        {
+          "pregunta": "¿Cuántos días hábiles tarda un envío a Cartago?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.622
+        },
+        {
+          "pregunta": "Mi paquete se pierde en el camino, ¿qué hacen?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.414
+        },
+        {
+          "pregunta": "¿Cuánto cuesta al mes el plan Jaguar?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.433
+        },
+        {
+          "pregunta": "Quiero pausar mi suscripción unos meses, ¿se puede?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.348
+        },
+        {
+          "pregunta": "¿Qué métodos de pago aceptan, sirve SINPE Móvil?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.406
+        },
+        {
+          "pregunta": "¿Cuánto tarda un reembolso a mi tarjeta?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.37
+        },
+        {
+          "pregunta": "¿Qué acidez y notas tiene el café de Tarrazú?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.531
+        },
+        {
+          "pregunta": "¿Cuál es la diferencia entre tueste claro y tueste oscuro?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.589
+        },
+        {
+          "pregunta": "¿Puedo devolver una bolsa sin abrir si me arrepentí de la compra?",
+          "esperada": "kb/devoluciones.md",
+          "hit": true,
+          "hit_1": false,
+          "posicion": 3,
+          "score": 0.33
+        },
+        {
+          "pregunta": "¿Tienen descuento para la primera compra?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.411
+        },
+        {
+          "pregunta": "¿Cuándo vence el crédito del programa de referidos?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.363
+        },
+        {
+          "pregunta": "¿Qué molienda recomiendan para prensa francesa?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.296
+        }
+      ],
+      "chunk_size": 800,
+      "chunk_overlap": 100,
+      "chunks_totales": 35,
+      "caracteres_medios": 2004,
+      "ejemplo_debug": {
+        "query": "¿Cuántos días hábiles tarda un envío a Cartago?",
+        "top_k": 4,
+        "results": [
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.622,
+            "content": "## Tiempos de entrega\n\n¿Cuánto tarda el envío? Depende de la zona:\n\n- Zona GAM: 1 a 2 días hábiles. Pedidos antes de las 12:00 salen el mismo día.\n- Zona Regional: 2 a 3 días hábiles. Por ejemplo, un envío a Cartago rural o a\n  Turrialba tarda normalmente 3 días hábiles.\n- Zona Extendida: 3 a 5 días hábiles. Un envío a Limón centro suele tardar\n  4 días hábiles; a zonas alejadas de Guanacaste puede llegar a 5.\n\nLos días hábiles no incluyen sábados, domingos ni feriados. En temporada alta\n(diciembre) hay que sumar 1 día hábil adicional a todas las zonas."
+          },
+          {
+            "title": "Facturación y pagos",
+            "source": "kb/facturacion.md",
+            "score": 0.262,
+            "content": "## Reembolsos\n\n¿Cuánto tarda un reembolso? Una vez aprobado, el reembolso se procesa en un\nplazo de 5 a 10 días hábiles, según el banco emisor de la tarjeta. Con SINPE\nMóvil el reembolso llega en máximo 2 días hábiles.\n\nCasos en los que aplica reembolso completo:\n\n- Paquete perdido o dañado (ver política de envíos).\n- Producto equivocado: enviamos un origen o molienda distinta a la pedida.\n- Compra duplicada por error del sistema.\n\nNo aplica reembolso por ciclos de suscripción ya facturados ni por cambios de\ngusto una vez abierta la bolsa (ver política de devoluciones). Todo reembolso\nse hace al mismo método de pago de la compra original."
+          },
+          {
+            "title": "Facturación y pagos",
+            "source": "kb/facturacion.md",
+            "score": 0.212,
+            "content": "## Cargos fallidos\n\nCuando el cobro de una renovación de suscripción falla (fondos insuficientes,\ntarjeta vencida, etc.):\n\n1. Reintentamos el cargo automáticamente a las 24 y a las 72 horas.\n2. Si ambos reintentos fallan, la suscripción pasa a estado «pausada por pago»\n   y avisamos por correo para que el cliente actualice su tarjeta.\n3. El cliente tiene 15 días naturales para actualizar el método de pago desde\n   «Mi cuenta» → «Métodos de pago». Al actualizarlo, la suscripción se\n   reactiva y el envío pendiente sale en el siguiente ciclo.\n4. Pasados los 15 días sin pago, la suscripción se cancela automáticamente.\n   El cliente puede volver a suscribirse cuando quiera, sin penalización.\n\nUn cargo fallido nunca genera multas ni intereses."
+          },
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.203,
+            "content": "## Costos de envío\n\n- Zona GAM: ₡1.800 por pedido.\n- Zona Regional: ₡2.500 por pedido.\n- Zona Extendida: ₡3.200 por pedido. El costo del envío a Limón, Puntarenas o\n  Guanacaste es el mismo: ₡3.200.\n- **Envío gratis** en pedidos superiores a ₡25.000, a cualquier zona del país.\n- Los suscriptores del plan Jaguar y del plan Guaria siempre tienen envío\n  gratis, sin importar el monto del pedido."
+          }
+        ]
+      }
+    },
+    {
+      "top_k": 1,
+      "total": 13,
+      "hits": 12,
+      "hits_at_1": 12,
+      "rows": [
+        {
+          "pregunta": "¿Cuánto cuesta el envío a Limón?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.371
+        },
+        {
+          "pregunta": "¿Cuántos días hábiles tarda un envío a Cartago?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.622
+        },
+        {
+          "pregunta": "Mi paquete se pierde en el camino, ¿qué hacen?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.414
+        },
+        {
+          "pregunta": "¿Cuánto cuesta al mes el plan Jaguar?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.433
+        },
+        {
+          "pregunta": "Quiero pausar mi suscripción unos meses, ¿se puede?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.348
+        },
+        {
+          "pregunta": "¿Qué métodos de pago aceptan, sirve SINPE Móvil?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.406
+        },
+        {
+          "pregunta": "¿Cuánto tarda un reembolso a mi tarjeta?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.37
+        },
+        {
+          "pregunta": "¿Qué acidez y notas tiene el café de Tarrazú?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.531
+        },
+        {
+          "pregunta": "¿Cuál es la diferencia entre tueste claro y tueste oscuro?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.589
+        },
+        {
+          "pregunta": "¿Puedo devolver una bolsa sin abrir si me arrepentí de la compra?",
+          "esperada": "kb/devoluciones.md",
+          "hit": false,
+          "hit_1": false,
+          "posicion": null,
+          "score": null
+        },
+        {
+          "pregunta": "¿Tienen descuento para la primera compra?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.411
+        },
+        {
+          "pregunta": "¿Cuándo vence el crédito del programa de referidos?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.363
+        },
+        {
+          "pregunta": "¿Qué molienda recomiendan para prensa francesa?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.296
+        }
+      ],
+      "chunk_size": 800,
+      "chunk_overlap": 100,
+      "chunks_totales": 35,
+      "caracteres_medios": 516,
+      "ejemplo_debug": {
+        "query": "¿Cuántos días hábiles tarda un envío a Cartago?",
+        "top_k": 1,
+        "results": [
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.622,
+            "content": "## Tiempos de entrega\n\n¿Cuánto tarda el envío? Depende de la zona:\n\n- Zona GAM: 1 a 2 días hábiles. Pedidos antes de las 12:00 salen el mismo día.\n- Zona Regional: 2 a 3 días hábiles. Por ejemplo, un envío a Cartago rural o a\n  Turrialba tarda normalmente 3 días hábiles.\n- Zona Extendida: 3 a 5 días hábiles. Un envío a Limón centro suele tardar\n  4 días hábiles; a zonas alejadas de Guanacaste puede llegar a 5.\n\nLos días hábiles no incluyen sábados, domingos ni feriados. En temporada alta\n(diciembre) hay que sumar 1 día hábil adicional a todas las zonas."
+          }
+        ]
+      }
+    },
+    {
+      "top_k": 8,
+      "total": 13,
+      "hits": 13,
+      "hits_at_1": 12,
+      "rows": [
+        {
+          "pregunta": "¿Cuánto cuesta el envío a Limón?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.371
+        },
+        {
+          "pregunta": "¿Cuántos días hábiles tarda un envío a Cartago?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.622
+        },
+        {
+          "pregunta": "Mi paquete se pierde en el camino, ¿qué hacen?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.414
+        },
+        {
+          "pregunta": "¿Cuánto cuesta al mes el plan Jaguar?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.433
+        },
+        {
+          "pregunta": "Quiero pausar mi suscripción unos meses, ¿se puede?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.348
+        },
+        {
+          "pregunta": "¿Qué métodos de pago aceptan, sirve SINPE Móvil?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.406
+        },
+        {
+          "pregunta": "¿Cuánto tarda un reembolso a mi tarjeta?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.37
+        },
+        {
+          "pregunta": "¿Qué acidez y notas tiene el café de Tarrazú?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.531
+        },
+        {
+          "pregunta": "¿Cuál es la diferencia entre tueste claro y tueste oscuro?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.589
+        },
+        {
+          "pregunta": "¿Puedo devolver una bolsa sin abrir si me arrepentí de la compra?",
+          "esperada": "kb/devoluciones.md",
+          "hit": true,
+          "hit_1": false,
+          "posicion": 3,
+          "score": 0.33
+        },
+        {
+          "pregunta": "¿Tienen descuento para la primera compra?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.411
+        },
+        {
+          "pregunta": "¿Cuándo vence el crédito del programa de referidos?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.363
+        },
+        {
+          "pregunta": "¿Qué molienda recomiendan para prensa francesa?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.296
+        }
+      ],
+      "chunk_size": 800,
+      "chunk_overlap": 100,
+      "chunks_totales": 35,
+      "caracteres_medios": 3969,
+      "ejemplo_debug": {
+        "query": "¿Cuántos días hábiles tarda un envío a Cartago?",
+        "top_k": 8,
+        "results": [
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.622,
+            "content": "## Tiempos de entrega\n\n¿Cuánto tarda el envío? Depende de la zona:\n\n- Zona GAM: 1 a 2 días hábiles. Pedidos antes de las 12:00 salen el mismo día.\n- Zona Regional: 2 a 3 días hábiles. Por ejemplo, un envío a Cartago rural o a\n  Turrialba tarda normalmente 3 días hábiles.\n- Zona Extendida: 3 a 5 días hábiles. Un envío a Limón centro suele tardar\n  4 días hábiles; a zonas alejadas de Guanacaste puede llegar a 5.\n\nLos días hábiles no incluyen sábados, domingos ni feriados. En temporada alta\n(diciembre) hay que sumar 1 día hábil adicional a todas las zonas."
+          },
+          {
+            "title": "Facturación y pagos",
+            "source": "kb/facturacion.md",
+            "score": 0.262,
+            "content": "## Reembolsos\n\n¿Cuánto tarda un reembolso? Una vez aprobado, el reembolso se procesa en un\nplazo de 5 a 10 días hábiles, según el banco emisor de la tarjeta. Con SINPE\nMóvil el reembolso llega en máximo 2 días hábiles.\n\nCasos en los que aplica reembolso completo:\n\n- Paquete perdido o dañado (ver política de envíos).\n- Producto equivocado: enviamos un origen o molienda distinta a la pedida.\n- Compra duplicada por error del sistema.\n\nNo aplica reembolso por ciclos de suscripción ya facturados ni por cambios de\ngusto una vez abierta la bolsa (ver política de devoluciones). Todo reembolso\nse hace al mismo método de pago de la compra original."
+          },
+          {
+            "title": "Facturación y pagos",
+            "source": "kb/facturacion.md",
+            "score": 0.212,
+            "content": "## Cargos fallidos\n\nCuando el cobro de una renovación de suscripción falla (fondos insuficientes,\ntarjeta vencida, etc.):\n\n1. Reintentamos el cargo automáticamente a las 24 y a las 72 horas.\n2. Si ambos reintentos fallan, la suscripción pasa a estado «pausada por pago»\n   y avisamos por correo para que el cliente actualice su tarjeta.\n3. El cliente tiene 15 días naturales para actualizar el método de pago desde\n   «Mi cuenta» → «Métodos de pago». Al actualizarlo, la suscripción se\n   reactiva y el envío pendiente sale en el siguiente ciclo.\n4. Pasados los 15 días sin pago, la suscripción se cancela automáticamente.\n   El cliente puede volver a suscribirse cuando quiera, sin penalización.\n\nUn cargo fallido nunca genera multas ni intereses."
+          },
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.203,
+            "content": "## Costos de envío\n\n- Zona GAM: ₡1.800 por pedido.\n- Zona Regional: ₡2.500 por pedido.\n- Zona Extendida: ₡3.200 por pedido. El costo del envío a Limón, Puntarenas o\n  Guanacaste es el mismo: ₡3.200.\n- **Envío gratis** en pedidos superiores a ₡25.000, a cualquier zona del país.\n- Los suscriptores del plan Jaguar y del plan Guaria siempre tienen envío\n  gratis, sin importar el monto del pedido."
+          },
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.188,
+            "content": "## Paquetes perdidos o dañados\n\nSi un paquete se pierde en el camino o llega dañado:\n\n1. El cliente debe reportarlo dentro de los 10 días naturales posteriores a la\n   fecha estimada de entrega.\n2. Reenviamos el pedido completo sin costo adicional, o devolvemos el dinero,\n   a elección del cliente.\n3. Si el paquete aparece después del reenvío, el cliente puede quedárselo:\n   no pedimos devolverlo.\n\nUn paquete se considera perdido cuando pasan 7 días hábiles desde la fecha\nestimada de entrega sin movimiento en el rastreo. En ese caso el agente debe\nescalar el caso a un humano para gestionar el reenvío o el reembolso."
+          },
+          {
+            "title": "Devoluciones",
+            "source": "kb/devoluciones.md",
+            "score": 0.163,
+            "content": "## Casos que debe resolver un humano\n\nEl agente debe escalar a un humano cualquier devolución que involucre:\n\n- Pedidos mayoristas (superiores a ₡100.000).\n- Reclamos de salud (por ejemplo, malestar tras consumir el producto).\n- Clientes que ya recibieron dos o más cupones de gesto en el último año."
+          },
+          {
+            "title": "Productos",
+            "source": "kb/productos.md",
+            "score": 0.161,
+            "content": ",\n  acidez suave y notas de frutos rojos y caramelo. Ideal para quien prefiere\n  una taza más suave.\n\nAdemás, cada mes rotamos un **microlote de edición limitada** (por ejemplo,\nun honey de Naranjo o un natural de Tarrazú) disponible primero para los\nsuscriptores del plan Guaria."
+          },
+          {
+            "title": "Devoluciones",
+            "source": "kb/devoluciones.md",
+            "score": 0.155,
+            "content": "## Qué casos cubre la política\n\nAceptamos la devolución del producto en estos casos:\n\n- **Producto equivocado**: el cliente recibió un origen, tueste o molienda\n  distintos a los que pidió. Por ejemplo, pidió Tarrazú en grano entero y\n  recibió Naranjo molido.\n- **Producto defectuoso**: la bolsa llegó rota, con la válvula dañada, o el\n  café presenta un defecto evidente de calidad (olor a humedad, granos\n  quemados).\n- **Bolsa sin abrir**: el cliente se arrepintió de la compra y la bolsa está\n  sellada. Tiene hasta 14 días naturales desde la entrega para iniciar la\n  devolución.\n\nEn los dos primeros casos el cliente elige entre reposición del producto o\nreembolso completo, incluyendo el costo del envío."
+          }
+        ]
+      }
+    },
+    {
+      "top_k": 4,
+      "total": 13,
+      "hits": 13,
+      "hits_at_1": 12,
+      "rows": [
+        {
+          "pregunta": "¿Cuánto cuesta el envío a Limón?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.385
+        },
+        {
+          "pregunta": "¿Cuántos días hábiles tarda un envío a Cartago?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.625
+        },
+        {
+          "pregunta": "Mi paquete se pierde en el camino, ¿qué hacen?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.485
+        },
+        {
+          "pregunta": "¿Cuánto cuesta al mes el plan Jaguar?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.532
+        },
+        {
+          "pregunta": "Quiero pausar mi suscripción unos meses, ¿se puede?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.401
+        },
+        {
+          "pregunta": "¿Qué métodos de pago aceptan, sirve SINPE Móvil?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.548
+        },
+        {
+          "pregunta": "¿Cuánto tarda un reembolso a mi tarjeta?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.5
+        },
+        {
+          "pregunta": "¿Qué acidez y notas tiene el café de Tarrazú?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.652
+        },
+        {
+          "pregunta": "¿Cuál es la diferencia entre tueste claro y tueste oscuro?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.572
+        },
+        {
+          "pregunta": "¿Puedo devolver una bolsa sin abrir si me arrepentí de la compra?",
+          "esperada": "kb/devoluciones.md",
+          "hit": true,
+          "hit_1": false,
+          "posicion": 2,
+          "score": 0.408
+        },
+        {
+          "pregunta": "¿Tienen descuento para la primera compra?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.663
+        },
+        {
+          "pregunta": "¿Cuándo vence el crédito del programa de referidos?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.459
+        },
+        {
+          "pregunta": "¿Qué molienda recomiendan para prensa francesa?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.273
+        }
+      ],
+      "chunk_size": 200,
+      "chunk_overlap": 40,
+      "chunks_totales": 112,
+      "caracteres_medios": 653,
+      "ejemplo_debug": {
+        "query": "¿Cuántos días hábiles tarda un envío a Cartago?",
+        "top_k": 4,
+        "results": [
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.625,
+            "content": "Turrialba tarda normalmente 3 días hábiles.\n- Zona Extendida: 3 a 5 días hábiles. Un envío a Limón centro suele tardar\n  4 días hábiles; a zonas alejadas de Guanacaste puede llegar a 5."
+          },
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.57,
+            "content": "- Zona GAM: 1 a 2 días hábiles. Pedidos antes de las 12:00 salen el mismo día.\n- Zona Regional: 2 a 3 días hábiles. Por ejemplo, un envío a Cartago rural o a\n  Turrialba tarda normalmente 3 días hábil"
+          },
+          {
+            "title": "Facturación y pagos",
+            "source": "kb/facturacion.md",
+            "score": 0.398,
+            "content": "¿Cuánto tarda un reembolso? Una vez aprobado, el reembolso se procesa en un\nplazo de 5 a 10 días hábiles, según el banco emisor de la tarjeta. Con SINPE\nMóvil el reembolso llega en máximo 2 días hábil"
+          },
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.299,
+            "content": "alejadas de Guanacaste puede llegar a 5.\n\nLos días hábiles no incluyen sábados, domingos ni feriados. En temporada alta\n(diciembre) hay que sumar 1 día hábil adicional a todas las zonas."
+          }
+        ]
+      }
+    },
+    {
+      "top_k": 4,
+      "total": 13,
+      "hits": 13,
+      "hits_at_1": 12,
+      "rows": [
+        {
+          "pregunta": "¿Cuánto cuesta el envío a Limón?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.371
+        },
+        {
+          "pregunta": "¿Cuántos días hábiles tarda un envío a Cartago?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.622
+        },
+        {
+          "pregunta": "Mi paquete se pierde en el camino, ¿qué hacen?",
+          "esperada": "kb/envios.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.414
+        },
+        {
+          "pregunta": "¿Cuánto cuesta al mes el plan Jaguar?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.433
+        },
+        {
+          "pregunta": "Quiero pausar mi suscripción unos meses, ¿se puede?",
+          "esperada": "kb/suscripciones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.348
+        },
+        {
+          "pregunta": "¿Qué métodos de pago aceptan, sirve SINPE Móvil?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.406
+        },
+        {
+          "pregunta": "¿Cuánto tarda un reembolso a mi tarjeta?",
+          "esperada": "kb/facturacion.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.37
+        },
+        {
+          "pregunta": "¿Qué acidez y notas tiene el café de Tarrazú?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.538
+        },
+        {
+          "pregunta": "¿Cuál es la diferencia entre tueste claro y tueste oscuro?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.589
+        },
+        {
+          "pregunta": "¿Puedo devolver una bolsa sin abrir si me arrepentí de la compra?",
+          "esperada": "kb/devoluciones.md",
+          "hit": true,
+          "hit_1": false,
+          "posicion": 3,
+          "score": 0.33
+        },
+        {
+          "pregunta": "¿Tienen descuento para la primera compra?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.411
+        },
+        {
+          "pregunta": "¿Cuándo vence el crédito del programa de referidos?",
+          "esperada": "kb/promociones.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.405
+        },
+        {
+          "pregunta": "¿Qué molienda recomiendan para prensa francesa?",
+          "esperada": "kb/productos.md",
+          "hit": true,
+          "hit_1": true,
+          "posicion": 1,
+          "score": 0.296
+        }
+      ],
+      "chunk_size": 3000,
+      "chunk_overlap": 300,
+      "chunks_totales": 32,
+      "caracteres_medios": 2045,
+      "ejemplo_debug": {
+        "query": "¿Cuántos días hábiles tarda un envío a Cartago?",
+        "top_k": 4,
+        "results": [
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.622,
+            "content": "## Tiempos de entrega\n\n¿Cuánto tarda el envío? Depende de la zona:\n\n- Zona GAM: 1 a 2 días hábiles. Pedidos antes de las 12:00 salen el mismo día.\n- Zona Regional: 2 a 3 días hábiles. Por ejemplo, un envío a Cartago rural o a\n  Turrialba tarda normalmente 3 días hábiles.\n- Zona Extendida: 3 a 5 días hábiles. Un envío a Limón centro suele tardar\n  4 días hábiles; a zonas alejadas de Guanacaste puede llegar a 5.\n\nLos días hábiles no incluyen sábados, domingos ni feriados. En temporada alta\n(diciembre) hay que sumar 1 día hábil adicional a todas las zonas."
+          },
+          {
+            "title": "Facturación y pagos",
+            "source": "kb/facturacion.md",
+            "score": 0.262,
+            "content": "## Reembolsos\n\n¿Cuánto tarda un reembolso? Una vez aprobado, el reembolso se procesa en un\nplazo de 5 a 10 días hábiles, según el banco emisor de la tarjeta. Con SINPE\nMóvil el reembolso llega en máximo 2 días hábiles.\n\nCasos en los que aplica reembolso completo:\n\n- Paquete perdido o dañado (ver política de envíos).\n- Producto equivocado: enviamos un origen o molienda distinta a la pedida.\n- Compra duplicada por error del sistema.\n\nNo aplica reembolso por ciclos de suscripción ya facturados ni por cambios de\ngusto una vez abierta la bolsa (ver política de devoluciones). Todo reembolso\nse hace al mismo método de pago de la compra original."
+          },
+          {
+            "title": "Facturación y pagos",
+            "source": "kb/facturacion.md",
+            "score": 0.212,
+            "content": "## Cargos fallidos\n\nCuando el cobro de una renovación de suscripción falla (fondos insuficientes,\ntarjeta vencida, etc.):\n\n1. Reintentamos el cargo automáticamente a las 24 y a las 72 horas.\n2. Si ambos reintentos fallan, la suscripción pasa a estado «pausada por pago»\n   y avisamos por correo para que el cliente actualice su tarjeta.\n3. El cliente tiene 15 días naturales para actualizar el método de pago desde\n   «Mi cuenta» → «Métodos de pago». Al actualizarlo, la suscripción se\n   reactiva y el envío pendiente sale en el siguiente ciclo.\n4. Pasados los 15 días sin pago, la suscripción se cancela automáticamente.\n   El cliente puede volver a suscribirse cuando quiera, sin penalización.\n\nUn cargo fallido nunca genera multas ni intereses."
+          },
+          {
+            "title": "Envíos",
+            "source": "kb/envios.md",
+            "score": 0.203,
+            "content": "## Costos de envío\n\n- Zona GAM: ₡1.800 por pedido.\n- Zona Regional: ₡2.500 por pedido.\n- Zona Extendida: ₡3.200 por pedido. El costo del envío a Limón, Puntarenas o\n  Guanacaste es el mismo: ₡3.200.\n- **Envío gratis** en pedidos superiores a ₡25.000, a cualquier zona del país.\n- Los suscriptores del plan Jaguar y del plan Guaria siempre tienen envío\n  gratis, sin importar el monto del pedido."
+          }
+        ]
+      }
+    }
+  ]
+}
