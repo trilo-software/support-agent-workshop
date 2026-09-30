@@ -19,7 +19,7 @@ class Tool:
     handler: Callable[..., Awaitable[dict]]
 
 
-from . import calcular_envio, check_order_status, escalate_to_human  # noqa: E402
+from . import calcular_envio, check_order_status, escalate_to_human,check_shipment_status  # noqa: E402
 
 # ────────────────────────── EJERCICIO 4 ──────────────────────────
 # check_order_status ya está implementado (míralo en
