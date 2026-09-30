@@ -36,7 +36,7 @@ async def handler(order_number: str) -> dict:
 tool = Tool(
     name="check_order_status",
     description=(
-        "Consulta el estado de un pedido de Café Pura Vida a partir de su "
+        "Consulta el estado de un pedido de Correos de Costa Rica a partir de su "
         "número (formato CR-1234). Devuelve estado, fecha estimada y artículos."
     ),
     parameters={

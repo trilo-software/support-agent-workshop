@@ -24,7 +24,7 @@ import sys
 from support_agent import config  # carga .env y fija el modelo por defecto
 
 SERVER_NAME = "cafe_pura_vida"
-PREGUNTA_DEFAULT = "¿Cuánto tarda un envío de Café Pura Vida a Cartago y cuánto cuesta?"
+PREGUNTA_DEFAULT = "¿Cuánto tarda un envío de Correos de Costa Rica a Cartago y cuánto cuesta?"
 
 
 def resumir(dump: dict) -> tuple[list[dict], str]:

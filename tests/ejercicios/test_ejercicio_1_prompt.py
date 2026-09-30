@@ -21,7 +21,7 @@ def test_tiene_sustancia():
 
 
 def test_se_presenta_como_cafe_pura_vida():
-    assert "pura vida" in _p(), "El agente debe saber que trabaja para Café Pura Vida."
+    assert "Correos de Costa Rica" in _p(), "El agente debe saber que trabaja para Correos de Costa Rica."
 
 
 def test_usa_el_bloque_contexto():

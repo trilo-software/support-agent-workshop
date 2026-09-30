@@ -1,1 +1,1 @@
-"""Agente de soporte con RAG para Café Pura Vida — workshop de Render."""
+"""Agente de soporte con RAG para Correos de Costa Rica — workshop de Render."""

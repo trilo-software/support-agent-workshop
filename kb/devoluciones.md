@@ -1,6 +1,6 @@
 # Devoluciones
 
-Política de devoluciones de Café Pura Vida: qué casos cubre, cuáles no, y el
+Política de devoluciones de Correos de Costa Rica: qué casos cubre, cuáles no, y el
 proceso paso a paso para devolver un producto.
 
 ## Qué casos cubre la política

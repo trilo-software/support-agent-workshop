@@ -1,6 +1,6 @@
 # Promociones
 
-En Café Pura Vida ofrecemos promociones diseñadas para premiar a nuestros clientes frecuentes y dar la bienvenida a nuevos amantes del café.
+En Correos de Costa Rica ofrecemos promociones diseñadas para premiar a nuestros clientes frecuentes y dar la bienvenida a nuevos amantes del café.
 
 ## Descuento de Primera Compra
 
@@ -18,7 +18,7 @@ Los nuevos clientes pueden obtener un **15% de descuento** en su primera compra 
 
 ## Programa de Referidos
 
-Comparte Café Pura Vida con tus amigos y ambos reciben beneficios.
+Comparte Correos de Costa Rica con tus amigos y ambos reciben beneficios.
 
 ### Beneficio
 
@@ -45,4 +45,4 @@ Los clientes registrados reciben un cupón de **20% de descuento** durante el me
 
 ## Vigencia General
 
-Todas las promociones están sujetas a disponibilidad y pueden ser modificadas o canceladas por Café Pura Vida sin previo aviso. Los descuentos no son canjeables por dinero en efectivo.
+Todas las promociones están sujetas a disponibilidad y pueden ser modificadas o canceladas por Correos de Costa Rica sin previo aviso. Los descuentos no son canjeables por dinero en efectivo.

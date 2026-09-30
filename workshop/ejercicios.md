@@ -6,15 +6,15 @@ servicio desplegado (edita → commit → push → Render redeploya).
 
 Son siete, en este orden, y todos cuentan:
 
-| # | Ejercicio | Acto |
-| --- | --- | --- |
-| 1 | Dale identidad al agente (system prompt) | 1 · Construir |
-| 2 | Enciende el RAG | 1 · Construir |
-| 3 | Alimenta la base de conocimiento | 1 · Construir |
-| 4 | Registra un tool existente | 1 · Construir |
-| 5 | Construye tu propio tool | 1 · Construir |
-| 6 | Mide tu RAG con mini-evals | 2 · Medir y exponer |
-| 7 | Expón tu RAG por MCP | 2 · Medir y exponer |
+| #   | Ejercicio                                | Acto                |
+| --- | ---------------------------------------- | ------------------- |
+| 1   | Dale identidad al agente (system prompt) | 1 · Construir       |
+| 2   | Enciende el RAG                          | 1 · Construir       |
+| 3   | Alimenta la base de conocimiento         | 1 · Construir       |
+| 4   | Registra un tool existente               | 1 · Construir       |
+| 5   | Construye tu propio tool                 | 1 · Construir       |
+| 6   | Mide tu RAG con mini-evals               | 2 · Medir y exponer |
+| 7   | Expón tu RAG por MCP                     | 2 · Medir y exponer |
 
 Tu progreso, en cualquier momento:
 
@@ -37,7 +37,7 @@ tiene identidad, ignora el bloque `CONTEXTO` que el agente le inyecta (mira
 `agent.py`), no cita fuentes y, sin información, escala todo a un humano.
 Reescríbelo para que el agente:
 
-1. Se presente como agente de soporte de **Café Pura Vida**, en español.
+1. Se presente como agente de soporte de **Correos de Costa Rica**, en español.
 2. Responda **SOLO** con información del bloque `CONTEXTO`.
 3. Cite la fuente entre corchetes, p. ej. `[Envíos]`.
 4. Si el contexto no alcanza, lo admita y ofrezca **escalar a un humano**.
@@ -59,7 +59,7 @@ referirse a ese bloque CONTEXTO por su nombre.
 
 <details><summary>Pista 2</summary>
 Estructura que funciona bien: un párrafo de identidad («Eres el agente de
-soporte de Café Pura Vida…») + una lista numerada de reglas (solo CONTEXTO,
+soporte de Correos de Costa Rica…») + una lista numerada de reglas (solo CONTEXTO,
 citar fuente entre corchetes, admitir cuando no sabe y ofrecer escalar, ser
 breve).
 </details>
@@ -111,7 +111,7 @@ La cláusula va entre el <code>FROM … JOIN …</code> y el <code>LIMIT</code>.
 **Objetivo:** ver que «la KB es solo markdown en git»: agregar conocimiento
 es agregar un archivo.
 
-Crea `kb/promociones.md` con la política de promociones de Café Pura Vida.
+Crea `kb/promociones.md` con la política de promociones de Correos de Costa Rica.
 Invéntala, pero con datos concretos. Contenido mínimo sugerido:
 
 - Un H1: `# Promociones`.
@@ -255,8 +255,8 @@ que esté en <code>TOOLS</code>: el modelo solo ve lo registrado.
 sabes si tu cambio ayudó o empeoró.
 
 El runner toma las preguntas doradas de `evals/preguntas.yaml` y mide si el
-documento esperado aparece en el top-k del retrieval (*hit*) y si aparece de
-primero (*hit@1*).
+documento esperado aparece en el top-k del retrieval (_hit_) y si aparece de
+primero (_hit@1_).
 
 1. **Línea base:**
 
@@ -282,7 +282,7 @@ primero (*hit@1*).
    uv run python -m support_agent.evals --top-k 8
    ```
 
-   ¿Cómo cambian *hits* y *hit@1*? ¿Qué costo tiene subir k? (más tokens de
+   ¿Cómo cambian _hits_ y _hit@1_? ¿Qué costo tiene subir k? (más tokens de
    contexto, más ruido para el modelo — mira el tamaño del bloque CONTEXTO).
 
 4. **Experimento B — chunking:** en `rag.py`, cambia `CHUNK_SIZE` (800 → 200,
@@ -345,6 +345,7 @@ servicio despierto:
    El script le pasa a la API de Gemini la URL de TU servidor MCP; Gemini
    decide llamar `buscar_kb`, tu servicio le devuelve los chunks y Gemini
    responde con ellos. Prueba también «¿cómo va el pedido CR-1003?».
+
 3. Opcional: un agente en tu terminal, Gemini CLI (gratis) o Claude Code
    (cuenta de pago). Comandos en el
    [README](../README.md#conecta-tu-servicio-por-mcp).

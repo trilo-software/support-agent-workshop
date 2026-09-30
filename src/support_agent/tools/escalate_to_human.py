@@ -12,7 +12,7 @@ async def handler(summary: str) -> dict:
     return {
         "ticket_id": ticket_id,
         "mensaje": (
-            "Creé el ticket de soporte. Un humano del equipo de Café Pura Vida "
+            "Creé el ticket de soporte. Un humano del equipo de Correos de Costa Rica "
             "te contactará en las próximas 24 horas."
         ),
     }
@@ -21,7 +21,7 @@ async def handler(summary: str) -> dict:
 tool = Tool(
     name="escalate_to_human",
     description=(
-        "Escala la conversación a un agente humano de Café Pura Vida creando "
+        "Escala la conversación a un agente humano de Correos de Costa Rica creando "
         "un ticket de soporte. Úsalo cuando el cliente lo pida o cuando el "
         "contexto disponible no alcance para resolver el caso."
     ),

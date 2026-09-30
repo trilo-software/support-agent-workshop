@@ -54,8 +54,8 @@ mientras los servicios están despiertos.
 - [ ] Env group `gemini-workshop` en el workspace del workshop con la
       `GEMINI_API_KEY` **real** (no un valor provisional). `render.yaml` ya lo
       enlaza con `fromGroup`, así que nadie pega nada. Render exige que el
-      grupo exista: si no, el Blueprint falla con *«env var group linkage
-      depends on non-existent group»*. Valida con
+      grupo exista: si no, el Blueprint falla con _«env var group linkage
+      depends on non-existent group»_. Valida con
       `render blueprints validate render.yaml` (CLI de Render, con ese
       workspace activo).
 - [ ] Tu **deploy de referencia** funcionando (rama `referencia` + Blueprint
@@ -84,17 +84,17 @@ mientras los servicios están despiertos.
 
 ## Triage: los primeros 10 minutos
 
-| Síntoma | Fix rápido |
-| --- | --- |
-| «No puedo crear el Blueprint: nombre en uso» | No corrió la Action `setup-attendee`. Actions → setup-attendee → Run workflow → recrear Blueprint |
-| «No veo el workspace de Esteban» | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto |
-| Build falla con `--frozen` | Tocaron `pyproject.toml` sin regenerar `uv.lock`. `git checkout uv.lock pyproject.toml` |
-| Blueprint falla: «non-existent group» | Usas `fromGroup` y el env group no existe en el workspace (o el nombre no coincide). Créalo y reintenta |
-| Deploy verde pero el chat da error 500 | La key del env group `gemini-workshop` es inválida o el grupo no quedó enlazado (Service → Environment). Escape: `AGENT_MODEL=mock` |
-| La URL tarda ~1 min o da timeout | Servicio free dormido. Esperar y recargar; arrancar el keep-alive si no está corriendo |
-| 429 de Gemini por toda la sala | Key saturada: que agreguen `AGENT_MODEL=mock` y sigan; el flujo completo funciona en mock |
-| «Run workflow no me deja elegir mi rama» | No hizo push de la rama (`git push -u origin tu-usuario`) o la creó con otro nombre. Recargar la página de Actions |
-| `git push` da «permission denied» | No aceptó la invitación de colaborador en GitHub, o intenta pushear a `main` (protegida): que cree su rama |
+| Síntoma                                      | Fix rápido                                                                                                                          |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| «No puedo crear el Blueprint: nombre en uso» | No corrió la Action `setup-attendee`. Actions → setup-attendee → Run workflow → recrear Blueprint                                   |
+| «No veo el workspace de Esteban»             | No aceptó la invitación o creó la cuenta con otro correo. Reenviar invitación al correo correcto                                    |
+| Build falla con `--frozen`                   | Tocaron `pyproject.toml` sin regenerar `uv.lock`. `git checkout uv.lock pyproject.toml`                                             |
+| Blueprint falla: «non-existent group»        | Usas `fromGroup` y el env group no existe en el workspace (o el nombre no coincide). Créalo y reintenta                             |
+| Deploy verde pero el chat da error 500       | La key del env group `gemini-workshop` es inválida o el grupo no quedó enlazado (Service → Environment). Escape: `AGENT_MODEL=mock` |
+| La URL tarda ~1 min o da timeout             | Servicio free dormido. Esperar y recargar; arrancar el keep-alive si no está corriendo                                              |
+| 429 de Gemini por toda la sala               | Key saturada: que agreguen `AGENT_MODEL=mock` y sigan; el flujo completo funciona en mock                                           |
+| «Run workflow no me deja elegir mi rama»     | No hizo push de la rama (`git push -u origin tu-usuario`) o la creó con otro nombre. Recargar la página de Actions                  |
+| `git push` da «permission denied»            | No aceptó la invitación de colaborador en GitHub, o intenta pushear a `main` (protegida): que cree su rama                          |
 
 ---
 
@@ -104,20 +104,20 @@ Desde el minuto 0, en una terminal aparte:
 `uv run python scripts/keep_alive.py asistentes.txt`. Déjalo correr hasta el
 cierre (y apágalo al terminar).
 
-| Reloj | Dur | Módulo | Nota |
-| --- | --- | --- | --- |
-| 0:00 | 15 min | Setup: rama + Action + crear Blueprint | Mientras deploya: dibujar la arquitectura |
-| 0:15 | 7 min | Demo del agente «tonto»: sin fuentes, escala todo a un humano | Motivación de los ejercicios |
-| 0:22 | 10 min | Ejercicio 1: el system prompt | push → redeploy → comparar en vivo |
-| 0:32 | 15 min | Ejercicio 2: encender el RAG (TOP_K + ORDER BY) | El aha del Acto 1: aparecen las fuentes |
-| 0:47 | 10 min | Ejercicio 3: `kb/promociones.md` + ingesta idempotente | «La KB es solo markdown en git» |
-| 0:57 | 8 min | Ejercicio 4: registrar `check_order_status` | Anatomía de un tool: descripción + schema + handler |
-| 1:05 | 20 min | Ejercicio 5: tu propio tool `calcular_envio` | «El modelo extrae, el código decide» |
-| 1:25 | 10 min | **Break** | El keep-alive evita que se duerman |
-| 1:35 | 30 min | Ejercicio 6: 2 preguntas doradas + experimentos de top-k y chunking | «Sin evals, cambias a ciegas» |
-| 2:05 | 8 min | Intro a MCP: qué es, por qué existe, diagrama cliente/servidor | Anclar con lo que YA construyeron |
-| 2:13 | 30 min | Ejercicio 7: completar `buscar_kb` + Inspector + script de Gemini | El aha del Acto 2: otro agente usa SU RAG |
-| 2:43 | 12 min | Cierre: límites del patrón naive, teaser colas/Workflows, se llevan su rama | Exit ticket |
+| Reloj | Dur    | Módulo                                                                      | Nota                                                |
+| ----- | ------ | --------------------------------------------------------------------------- | --------------------------------------------------- |
+| 0:00  | 15 min | Setup: rama + Action + crear Blueprint                                      | Mientras deploya: dibujar la arquitectura           |
+| 0:15  | 7 min  | Demo del agente «tonto»: sin fuentes, escala todo a un humano               | Motivación de los ejercicios                        |
+| 0:22  | 10 min | Ejercicio 1: el system prompt                                               | push → redeploy → comparar en vivo                  |
+| 0:32  | 15 min | Ejercicio 2: encender el RAG (TOP_K + ORDER BY)                             | El aha del Acto 1: aparecen las fuentes             |
+| 0:47  | 10 min | Ejercicio 3: `kb/promociones.md` + ingesta idempotente                      | «La KB es solo markdown en git»                     |
+| 0:57  | 8 min  | Ejercicio 4: registrar `check_order_status`                                 | Anatomía de un tool: descripción + schema + handler |
+| 1:05  | 20 min | Ejercicio 5: tu propio tool `calcular_envio`                                | «El modelo extrae, el código decide»                |
+| 1:25  | 10 min | **Break**                                                                   | El keep-alive evita que se duerman                  |
+| 1:35  | 30 min | Ejercicio 6: 2 preguntas doradas + experimentos de top-k y chunking         | «Sin evals, cambias a ciegas»                       |
+| 2:05  | 8 min  | Intro a MCP: qué es, por qué existe, diagrama cliente/servidor              | Anclar con lo que YA construyeron                   |
+| 2:13  | 30 min | Ejercicio 7: completar `buscar_kb` + Inspector + script de Gemini           | El aha del Acto 2: otro agente usa SU RAG           |
+| 2:43  | 12 min | Cierre: límites del patrón naive, teaser colas/Workflows, se llevan su rama | Exit ticket                                         |
 
 **Flex:** ningún ejercicio es opcional. Si el grupo va lento, lo primero que
 se recorta es el experimento B (chunking) del Ejercicio 6 y el paso extra de
@@ -133,7 +133,7 @@ Inspector: desbloquea igual.
 ### Setup (0:00)
 
 Mientras los deploys corren, dibuja la arquitectura del README en la pizarra.
-Puntos: *un* web service (FastAPI) en free, el índice de embeddings **en
+Puntos: _un_ web service (FastAPI) en free, el índice de embeddings **en
 memoria** dentro del proceso, y TODO el trabajo del agente pasa dentro del
 request HTTP («patrón naive» — planta la semilla del cierre). La ingesta
 corre al arrancar y es idempotente por hash. Di en voz alta que el código de
@@ -150,18 +150,18 @@ En tu deploy de referencia SIN resolver: pregunta «¿cuánto tarda el envío a
 Cartago?» → sin chips de fuentes, y con Gemini 3.6 lo típico es que **escale
 todo a un humano** (badge 🔧 `escalate_to_human`, ticket #1, #2, #3…) porque
 no tiene contexto; otras veces responde genérico o inventa. Pregunta
-«¿tienen descuento?» → lo mismo. Mensaje: *el deploy está verde; el agente
+«¿tienen descuento?» → lo mismo. Mensaje: _el deploy está verde; el agente
 está mal — y eso es lo normal en el primer intento de RAG. Hoy lo arreglamos
-midiendo.*
+midiendo._
 
 ### Ejercicio 1 (0:22)
 
 Enseña `agent.py` en pantalla: el system prompt + bloque CONTEXTO. La regla
-de oro de RAG del lado del prompt: *responde solo con el contexto y cita la
-fuente*. Deja 5–6 min de trabajo, luego enseña tu solución.
+de oro de RAG del lado del prompt: _responde solo con el contexto y cita la
+fuente_. Deja 5–6 min de trabajo, luego enseña tu solución.
 
 Pitfall: gente que escribe el prompt en inglés — recuérdales que el test
-pide «Pura Vida» y el público habla español.
+pide «Correos de Costa Rica» y el público habla español.
 
 ### Ejercicio 2 (0:32)
 
@@ -175,7 +175,7 @@ del SELECT es 1−distancia, por eso mayor = mejor).
 
 ### Ejercicio 3 (0:47)
 
-Mensaje: *alimentar la KB no es tocar código, es git*. Tras el push, el log
+Mensaje: _alimentar la KB no es tocar código, es git_. Tras el push, el log
 del deploy muestra `ingesta: 6 documentos, 6 nuevos…` (memoria: cada arranque
 embebe todo). Luego la idempotencia en vivo: `curl -X POST
 https://<tu-ref>.onrender.com/api/ingest` dos veces seguidas → `ingresados:
@@ -229,9 +229,9 @@ Lo que importa es comparar contra su propia línea base.
 
 ### Intro a MCP (2:05)
 
-Definición en una frase: *USB-C para capacidades de IA — un protocolo
+Definición en una frase: _USB-C para capacidades de IA — un protocolo
 estándar entre clientes (Claude, IDEs, otros agentes) y servidores (tu
-servicio)*. Diagrama: cliente ↔ servidor MCP; el server expone tools con
+servicio)_. Diagrama: cliente ↔ servidor MCP; el server expone tools con
 schemas; el cliente decide cuándo llamarlos leyendo las descripciones.
 Ancla: «ya tienen un servidor MCP corriendo en `/mcp` con 2 tools; falta el
 mejor: su retrieval».
@@ -278,7 +278,7 @@ Exit ticket (2 preguntas): «¿qué pieza de RAG te sorprendió por simple?» y
 ### Ejercicio 1 — `src/support_agent/prompts.py`
 
 ```python
-SYSTEM_PROMPT = """Eres el agente de soporte al cliente de Café Pura Vida, una
+SYSTEM_PROMPT = """Eres el agente de soporte al cliente de Correos de Costa Rica, una
 tienda online de café de especialidad costarricense con suscripciones
 mensuales. Respondes siempre en español, con tono cercano y profesional.
 
@@ -316,7 +316,7 @@ LIMIT $2;
 ```markdown
 # Promociones
 
-Promociones y descuentos vigentes de Café Pura Vida.
+Promociones y descuentos vigentes de Correos de Costa Rica.
 
 ## Descuento de primera compra
 
@@ -377,7 +377,7 @@ async def handler(canton: str, monto_pedido: int) -> dict:
 tool = Tool(
     name="calcular_envio",
     description=(
-        "Cotiza el envío de un pedido de Café Pura Vida: dado el cantón de "
+        "Cotiza el envío de un pedido de Correos de Costa Rica: dado el cantón de "
         "entrega y el monto del pedido en colones, devuelve la zona (GAM, "
         "Regional o Extendida), el costo del envío (0 si aplica envío gratis "
         "por superar ₡25.000) y los días hábiles de entrega. Úsalo siempre que "
@@ -423,14 +423,14 @@ pantalla), con las 11 preguntas originales:
 - `--top-k 1`: `10/11 hits · 10/11 hit@1` (menos recall).
 - `--top-k 8`: `11/11 hits` (igual, pero el CONTEXTO se duplica en tamaño).
 - Con las dos preguntas de ejemplo de arriba (13 en total): `13/13 hits ·
-  12/13 hit@1`.
+12/13 hit@1`.
 
 ### Ejercicio 7 — `src/support_agent/mcp_server.py`
 
 ```python
 @mcp.tool(
     description=(
-        "Busca en la base de conocimiento de Café Pura Vida (envíos, "
+        "Busca en la base de conocimiento de Correos de Costa Rica (envíos, "
         "suscripciones, facturación, productos, devoluciones) y devuelve los "
         "fragmentos más relevantes para una pregunta, con fuente y score."
     )
@@ -479,6 +479,6 @@ async def calcular_envio(canton: str, monto_pedido: int) -> dict:
   un despertar no invalida nada; solo la primera llamada puede dar timeout.
   Reintentar.
 - **Postgres + pgvector**: variante en el README, validada con `render
-  blueprints validate`. En el workspace compartido no sirve en free (una sola
+blueprints validate`. En el workspace compartido no sirve en free (una sola
   Postgres free por workspace); si algún día quieres bases para todos, tienen
   que ser de pago (una por asistente): bórralas al terminar.

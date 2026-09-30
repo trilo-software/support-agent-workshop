@@ -1,7 +1,7 @@
 # Workshop: Agente de Soporte con RAG y MCP en Render
 
 Vas a construir, medir y exponer un **agente de soporte al cliente** para
-**Café Pura Vida**, una tienda ficticia de café de especialidad costarricense.
+**Correos de Costa Rica**, una tienda ficticia de café de especialidad costarricense.
 El agente responde usando **RAG** (Retrieval-Augmented Generation) sobre una
 base de conocimiento en markdown, con **Gemini** como modelo, y al final
 expone su retrieval como **servidor MCP** para que Claude (o cualquier cliente
@@ -75,8 +75,8 @@ La Action prefija los recursos del `render.yaml` con tu usuario de GitHub
 de asistentes en el workspace compartido de Render, y commitea el cambio en
 tu rama. Haz `git pull` para traértelo.
 
-*(Sin la Action: `uv run python scripts/setup_attendee.py tu-usuario` en
-local, y commit + push.)*
+_(Sin la Action: `uv run python scripts/setup_attendee.py tu-usuario` en
+local, y commit + push.)_
 
 ## Paso 1 — Deploy del Blueprint en Render
 
@@ -121,15 +121,15 @@ El detalle completo (con pistas escalonadas) está en
 uv run pytest -m ejercicio   # rojos al inicio → verdes al completar
 ```
 
-| # | Qué arreglas | Archivo | Tiempo |
-| --- | --- | --- | --- |
-| 1 | El system prompt: identidad, contexto, citas, escalamiento | `src/support_agent/prompts.py` | ~10 min |
-| 2 | Encender el RAG: `TOP_K` y el `ORDER BY` de la query | `src/support_agent/rag.py` | ~15 min |
-| 3 | Alimentar la KB: crea `kb/promociones.md` | `kb/` | ~10 min |
-| 4 | Registrar un tool existente: `check_order_status` | `src/support_agent/tools/__init__.py` | ~8 min |
-| 5 | Tu propio tool: `calcular_envio` (descripción, schema, handler) | `src/support_agent/tools/calcular_envio.py` | ~20 min |
-| 6 | Medir con mini-evals: 2 preguntas doradas + experimentos de top-k y chunking | `evals/preguntas.yaml`, `src/support_agent/evals.py` | ~30 min |
-| 7 | Exponer tu RAG por MCP: completa `buscar_kb` y que otro agente lo use | `src/support_agent/mcp_server.py` | ~30 min |
+| #   | Qué arreglas                                                                 | Archivo                                              | Tiempo  |
+| --- | ---------------------------------------------------------------------------- | ---------------------------------------------------- | ------- |
+| 1   | El system prompt: identidad, contexto, citas, escalamiento                   | `src/support_agent/prompts.py`                       | ~10 min |
+| 2   | Encender el RAG: `TOP_K` y el `ORDER BY` de la query                         | `src/support_agent/rag.py`                           | ~15 min |
+| 3   | Alimentar la KB: crea `kb/promociones.md`                                    | `kb/`                                                | ~10 min |
+| 4   | Registrar un tool existente: `check_order_status`                            | `src/support_agent/tools/__init__.py`                | ~8 min  |
+| 5   | Tu propio tool: `calcular_envio` (descripción, schema, handler)              | `src/support_agent/tools/calcular_envio.py`          | ~20 min |
+| 6   | Medir con mini-evals: 2 preguntas doradas + experimentos de top-k y chunking | `evals/preguntas.yaml`, `src/support_agent/evals.py` | ~30 min |
+| 7   | Exponer tu RAG por MCP: completa `buscar_kb` y que otro agente lo use        | `src/support_agent/mcp_server.py`                    | ~30 min |
 
 ## Conecta tu servicio por MCP
 
@@ -143,8 +143,8 @@ la más vistosa:
 npx @modelcontextprotocol/inspector
 ```
 
-Conecta a `https://<tu-servicio>.onrender.com/mcp` (transporte *Streamable
-HTTP*), lista los tools e invoca `buscar_kb` a mano.
+Conecta a `https://<tu-servicio>.onrender.com/mcp` (transporte _Streamable
+HTTP_), lista los tools e invoca `buscar_kb` a mano.
 
 **2. Gemini por API** (el wow, con la misma key del workshop): la API de
 Gemini se conecta sola a tu servidor MCP y decide cuándo llamar tus tools.
@@ -167,7 +167,8 @@ Gemini, no tu máquina.
   npx @google/gemini-cli
   ```
 
-  y pregúntale: *«¿cuánto tarda un envío de Café Pura Vida a Cartago?»*.
+  y pregúntale: _«¿cuánto tarda un envío de Correos de Costa Rica a Cartago?»_.
+
 - **Claude Code** (requiere suscripción de Claude o API key de Anthropic):
 
   ```bash
@@ -210,14 +211,14 @@ uv run uvicorn support_agent.server:app --reload --port 3000
 
 ## Variables de entorno
 
-| Var | Requerida | Notas |
-| --- | --- | --- |
-| `GEMINI_API_KEY` | En Render la aporta el env group `gemini-workshop` | Sin ella, modo mock determinista (local y tests) |
-| `AGENT_MODEL` | No | `mock` fuerza el mock aunque haya key |
-| `GEMINI_MODEL` | No | Default `gemini-3.6-flash` |
-| `GEMINI_EMBED_MODEL` | No | Default `gemini-embedding-001` (768 dims) |
-| `DATABASE_URL` | No | Sin ella, backend en memoria (así corre el workshop). Con ella, Postgres + pgvector |
-| `PORT` | No | Default `3000` (en Render la inyecta la plataforma) |
+| Var                  | Requerida                                          | Notas                                                                               |
+| -------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`     | En Render la aporta el env group `gemini-workshop` | Sin ella, modo mock determinista (local y tests)                                    |
+| `AGENT_MODEL`        | No                                                 | `mock` fuerza el mock aunque haya key                                               |
+| `GEMINI_MODEL`       | No                                                 | Default `gemini-3.6-flash`                                                          |
+| `GEMINI_EMBED_MODEL` | No                                                 | Default `gemini-embedding-001` (768 dims)                                           |
+| `DATABASE_URL`       | No                                                 | Sin ella, backend en memoria (así corre el workshop). Con ella, Postgres + pgvector |
+| `PORT`               | No                                                 | Default `3000` (en Render la inyecta la plataforma)                                 |
 
 En local, la app carga `<raíz>/.env` si existe (sin pisar variables ya
 exportadas).
@@ -230,24 +231,24 @@ pgvector de verdad, agrega una base al `render.yaml` y la variable
 
 ```yaml
 projects:
-- name: rag-agent-workshop
-  environments:
-  - name: production
-    databases:
-    - name: support-agent-db
-      plan: free          # o basic-256mb (de pago)
-      region: oregon
-      postgresMajorVersion: '18'
-    services:
-    - type: web
-      name: support-agent
-      # ... igual que ahora ...
-      envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: support-agent-db
-          property: connectionString
-      # ... resto igual ...
+  - name: rag-agent-workshop
+    environments:
+      - name: production
+        databases:
+          - name: support-agent-db
+            plan: free # o basic-256mb (de pago)
+            region: oregon
+            postgresMajorVersion: "18"
+        services:
+          - type: web
+            name: support-agent
+            # ... igual que ahora ...
+            envVars:
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: support-agent-db
+                  property: connectionString
+            # ... resto igual ...
 ```
 
 Al arrancar, la app crea el schema (`CREATE EXTENSION vector`, tablas
@@ -261,16 +262,16 @@ límite. La Action `setup-attendee` también prefija la base si la agregas.
 
 ## Troubleshooting
 
-| Síntoma | Fix |
-| --- | --- |
-| El deploy falla en build | Mira los logs: casi siempre es no haber corrido la Action `setup-attendee` (colisión de nombres) o un `render.yaml` editado a mano |
-| Mi URL tarda o da timeout | El servicio free estaba dormido: espera ~1 min y recarga. Después responde normal |
-| Gemini devuelve 429 (rate limit) | Agrega `AGENT_MODEL=mock` como env var del servicio en Render: todo sigue funcionando en modo mock |
-| El chat responde sin fuentes | Es el estado inicial: Ejercicios 1 y 2 |
-| «Creé un ticket y desapareció» | Memoria: se pierde al redeployar o al despertar. Esperado en el workshop |
-| No encuentra un doc nuevo de `kb/` | En Render, el push redeploya y re-ingesta todo. En local, `curl -X POST http://localhost:3000/api/ingest` sin reiniciar |
-| El cliente MCP no conecta | Prueba primero con el Inspector; verifica que la URL termina en `/mcp`; si el servicio dormía, despiértalo desde el navegador y reintenta |
-| Nombres colisionan en Render | Corre la Action `setup-attendee` sobre tu rama y vuelve a crear el Blueprint |
+| Síntoma                            | Fix                                                                                                                                       |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| El deploy falla en build           | Mira los logs: casi siempre es no haber corrido la Action `setup-attendee` (colisión de nombres) o un `render.yaml` editado a mano        |
+| Mi URL tarda o da timeout          | El servicio free estaba dormido: espera ~1 min y recarga. Después responde normal                                                         |
+| Gemini devuelve 429 (rate limit)   | Agrega `AGENT_MODEL=mock` como env var del servicio en Render: todo sigue funcionando en modo mock                                        |
+| El chat responde sin fuentes       | Es el estado inicial: Ejercicios 1 y 2                                                                                                    |
+| «Creé un ticket y desapareció»     | Memoria: se pierde al redeployar o al despertar. Esperado en el workshop                                                                  |
+| No encuentra un doc nuevo de `kb/` | En Render, el push redeploya y re-ingesta todo. En local, `curl -X POST http://localhost:3000/api/ingest` sin reiniciar                   |
+| El cliente MCP no conecta          | Prueba primero con el Inspector; verifica que la URL termina en `/mcp`; si el servicio dormía, despiértalo desde el navegador y reintenta |
+| Nombres colisionan en Render       | Corre la Action `setup-attendee` sobre tu rama y vuelve a crear el Blueprint                                                              |
 
 ## Siguiente paso
 
@@ -283,5 +284,5 @@ escala). Caminos para seguir:
 - **Retrieval as a tool**: que el modelo decida cuándo buscar en la KB, en
   vez de recuperar siempre.
 - **Auth para el servidor MCP** (OAuth/token).
-- Más evals: medir también la calidad de la *respuesta* (no solo el
+- Más evals: medir también la calidad de la _respuesta_ (no solo el
   retrieval), p. ej. con un LLM como juez.

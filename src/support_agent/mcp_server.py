@@ -1,4 +1,4 @@
-"""Servidor MCP de Café Pura Vida. Aquí vive el EJERCICIO 7.
+"""Servidor MCP de Correos de Costa Rica. Aquí vive el EJERCICIO 7.
 
 Expone por Model Context Protocol (transporte HTTP streamable, montado en
 /mcp de la MISMA app FastAPI) las capacidades que ya construiste: los tools
@@ -42,7 +42,7 @@ mcp.settings.streamable_http_path = "/"
 
 @mcp.tool(
     description=(
-        "Consulta el estado de un pedido de Café Pura Vida a partir de su "
+        "Consulta el estado de un pedido de Correos de Costa Rica a partir de su "
         "número (formato CR-1234). Devuelve estado, fecha estimada y artículos."
     )
 )
@@ -54,7 +54,7 @@ async def check_order_status(order_number: str) -> dict:
 
 @mcp.tool(
     description=(
-        "Escala un caso a un agente humano de Café Pura Vida creando un "
+        "Escala un caso a un agente humano de Correos de Costa Rica creando un "
         "ticket de soporte con un resumen del problema."
     )
 )
@@ -78,7 +78,7 @@ async def escalate_to_human(summary: str) -> dict:
 # ─────────────────────────────────────────────────────────────────
 @mcp.tool(
     description=(
-        "Busca en la base de conocimiento de Café Pura Vida (envíos, "
+        "Busca en la base de conocimiento de Correos de Costa Rica (envíos, "
         "suscripciones, facturación, productos, devoluciones) y devuelve los "
         "fragmentos más relevantes para una pregunta, con fuente y score."
     )

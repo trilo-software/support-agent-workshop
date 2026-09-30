@@ -37,7 +37,7 @@ def test_chat_sin_mensaje_es_400(client):
 def test_chat_acepta_historial(client):
     history = [
         {"role": "user", "content": "hola"},
-        {"role": "assistant", "content": "¡Pura vida! ¿En qué te ayudo?"},
+        {"role": "assistant", "content": "¡Correos de Costa Rica! ¿En qué te ayudo?"},
     ]
     res = client.post("/api/chat", json={"message": "gracias", "history": history})
     assert res.status_code == 200
@@ -56,7 +56,7 @@ def test_debug_search_expone_el_retrieval(client):
 def test_ui_se_sirve_en_raiz(client):
     res = client.get("/")
     assert res.status_code == 200
-    assert "Café Pura Vida" in res.text
+    assert "Correos de Costa Rica" in res.text
 
 
 MCP_INITIALIZE = {

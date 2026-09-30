@@ -46,7 +46,7 @@ async def lifespan(app: FastAPI):
     await db.close()
 
 
-app = FastAPI(title="Café Pura Vida — agente de soporte", lifespan=lifespan)
+app = FastAPI(title="Correos de Costa Rica — agente de soporte", lifespan=lifespan)
 
 
 @app.get("/healthz")

@@ -1,6 +1,6 @@
 # Suscripciones
 
-Todo sobre los planes de suscripción mensual de Café Pura Vida: precios,
+Todo sobre los planes de suscripción mensual de Correos de Costa Rica: precios,
 qué incluye cada plan, y cómo pausar, cancelar o cambiar de plan.
 
 ## Planes disponibles
