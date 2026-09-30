@@ -40,3 +40,9 @@
 
 - pregunta: "¿Tienen descuento para la primera compra?"
   fuente_esperada: kb/promociones.md
+
+- pregunta: "¿Cómo funciona el programa de referidos y cuánto descuento recibimos?"
+  fuente_esperada: kb/promociones.md
+
+- pregunta: "La bolsa llegó rota y con la válvula dañada, ¿puedo pedir una devolución o un reembolso?"
+  fuente_esperada: kb/devoluciones.md

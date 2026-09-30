@@ -17,14 +17,14 @@ from .embeddings import embed
 
 # Parámetros de chunking. El Ejercicio 6 (experimento B) juega con estos
 # valores: prueba 200 y 3000 y mira cómo cambia el score de los evals.
-CHUNK_SIZE = 800
+CHUNK_SIZE = 200
 CHUNK_OVERLAP = 100
 
 # ────────────────────────── EJERCICIO 2 (a) ──────────────────────────
 # Con TOP_K = 0 el agente vuela a ciegas: no recupera NINGÚN chunk
 # de la base de conocimiento. Sube el valor (4 funciona bien).
 # ─────────────────────────────────────────────────────────────────────
-TOP_K = 0
+TOP_K = 4
 
 # ────────────────────────── EJERCICIO 2 (b) ──────────────────────────
 # A esta query le falta lo más importante: ordenar por similitud.
@@ -39,6 +39,7 @@ RETRIEVE_SQL = """
     SELECT c.content, d.title, d.source,
            1 - (c.embedding <=> $1::vector) AS score
     FROM chunks c JOIN documents d ON d.id = c.document_id
+    ORDER BY c.embedding <=> $1::vector
     LIMIT $2;
 """
 
