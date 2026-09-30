@@ -41,12 +41,28 @@ Los días hábiles no incluyen sábados, domingos ni feriados. En temporada alta
 - Los suscriptores del plan Jaguar y del plan Guaria siempre tienen envío
   gratis, sin importar el monto del pedido.
 
-## Rastreo del pedido
+## Rastreo del envío
 
-Cada pedido tiene un número con formato `CR-` seguido de cuatro dígitos, por
-ejemplo `CR-1003`. Con ese número el agente puede consultar el estado del
-pedido: preparando, en tránsito, entregado o retrasado. Si el cliente no tiene
-su número de pedido, puede encontrarlo en el correo de confirmación de compra.
+Cada envío tiene un número de guía con el formato de 2 letras, 9 dígitos y las
+letras `CR` al final, por ejemplo `PY000010864CR`. El último de los 9 dígitos
+es un dígito verificador, así que una guía mal copiada se detecta de inmediato.
+El cliente puede escribir la guía en mayúsculas o minúsculas, con o sin espacios
+o guiones.
+
+Con ese número el agente puede consultar el estado del envío y la sucursal
+donde se encuentra. Los estados posibles son:
+
+- **Creado:** la guía fue registrada, pero el envío aún no ingresa a una sucursal.
+- **En sucursal:** el envío está en la sucursal indicada.
+- **En tránsito:** el envío va en camino entre sucursales.
+- **En reparto:** el envío salió a reparto hacia el destinatario.
+- **Entregado:** el envío ya fue entregado; se indica la fecha de entrega.
+- **Retrasado:** el envío presenta un atraso.
+- **Devuelto:** el envío fue devuelto al remitente.
+
+Si el cliente no tiene su número de guía, puede encontrarlo en el comprobante
+que recibió al realizar el envío. Por seguridad, la consulta por guía no muestra
+el nombre del remitente ni del destinatario.
 
 ## Paquetes perdidos o dañados
 
