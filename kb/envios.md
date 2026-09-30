@@ -5,7 +5,7 @@ si un paquete se pierde o llega dañado.
 
 ## Zonas de cobertura
 
-Café Pura Vida envía a todo Costa Rica. Dividimos el país en tres zonas:
+Correos de Costa Rica envía a todo Costa Rica. Dividimos el país en tres zonas:
 
 - **Zona GAM** (Gran Área Metropolitana): San José, Heredia, Alajuela centro y
   Cartago centro.
