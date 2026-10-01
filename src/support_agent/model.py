@@ -104,6 +104,11 @@ def _chat_mock(messages: list[dict], tools: dict[str, Tool]) -> ModelReply:
         ])
 
     normalized = _normalize(user_text)
+    if normalized.strip() in {"hola", "buenas", "buenos dias", "buenas tardes", "buenas noches"}:
+        return ModelReply(
+            text="[mock] \u00a1Hola! Bienvenido a Caf\u00e9 Pura Vida. \u00bfQu\u00e9 deseas consultar?"
+        )
+
     envio = ENVIO_RE.search(normalized)
     if envio and "calcular_envio" in tools and ("cuesta" in normalized or "costo" in normalized or "sale" in normalized):
         monto = MONTO_RE.search(normalized)

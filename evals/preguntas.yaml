@@ -40,3 +40,9 @@
 
 - pregunta: "¿Tienen descuento para la primera compra?"
   fuente_esperada: kb/promociones.md
+
+- pregunta: "¿Qué descuento tienen para mi primera compra?"
+  fuente_esperada: kb/promociones.md
+ 
+- pregunta: "¿Qué pasa si mi paquete llega dañado o abierto?"
+  fuente_esperada: kb/devoluciones.md

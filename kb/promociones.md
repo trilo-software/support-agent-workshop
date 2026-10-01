@@ -1,5 +1,17 @@
-- Un H1: `# Promociones`.
-- Un **descuento de primera compra** si la compra es mayor a 20 000  colones 500 000 colones se hace de un 5 15 % devuelve un codigo promocional tipo DESC20 a los de 20.000 colones. y el DESC500 a los de 500mil colones por ejemplo.
-hay descuento cada 10mil colones, crea el codigo basado en eso. ejemplo 30 ->DESC30
-- Un **programa de referidos** con montos concretos (p. ej. ₡3.000 para cada
-  lado). y adicionalmente por referir a un cliente se le dara la recoleccion gratuita, por un mes.
+# Promociones
+
+## Descuento de primera compra
+
+Las personas que realizan su primera compra en Café Pura Vida reciben un 10 %
+de descuento en pedidos de ₡20.000 o más. Para aplicarlo, usa el código
+`BIENVENIDA10` al finalizar la compra. El descuento no se acumula con otras
+promociones, no aplica al costo del envío y se puede usar una sola vez por
+cliente.
+
+## Programa de referidos
+
+Comparte tu enlace de referidos con una persona nueva. Cuando esa persona haga
+su primera compra de ₡20.000 o más, ambos reciben un cupón de ₡3.000 para una
+compra futura. El cupón se envía por correo después de confirmar el pago y
+tiene una vigencia de 30 días. Cada cupón se aplica a un solo pedido y no es
+canjeable por efectivo.
